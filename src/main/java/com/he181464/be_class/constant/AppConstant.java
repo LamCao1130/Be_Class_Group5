@@ -7,4 +7,6 @@ public class AppConstant {
 
     public static final String STATUS_ACTIVE = "1";
     public static final String STATUS_INACTIVE = "0";
+
+
 }
