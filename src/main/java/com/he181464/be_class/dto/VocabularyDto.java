@@ -9,15 +9,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class VocabularyUpdateDto {
+public class VocabularyDto {
 
-    private Long id;
+    Long id;
 
     @NotBlank(message = "Từ không được để trống")
     private String englishWord;
 
 
-    @NotBlank(message = "Phát âm không được để trống")
     private String pronunciation;
 
     @NotBlank(message = "Nghĩa không được để trống")
@@ -25,13 +24,8 @@ public class VocabularyUpdateDto {
 
     private String exampleSample;
 
-    private WordType wordType;
+     private WordType wordType;
 
-    private String imageUrl;
+    private Long lessonId;
 
-    private String exampleAudio;
-
-    private Long teacherId;
-
-    private int sortOrder;
 }

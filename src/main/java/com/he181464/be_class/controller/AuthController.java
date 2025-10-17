@@ -2,13 +2,18 @@ package com.he181464.be_class.controller;
 
 import com.he181464.be_class.dto.AccountDto;
 import com.he181464.be_class.dto.LoginDto;
+import com.he181464.be_class.jwt.JwtService;
+import com.he181464.be_class.model.response.AuthResponse;
 import com.he181464.be_class.service.AccountService;
+import com.he181464.be_class.service.TokenService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +27,10 @@ public class AuthController {
     private final UserDetailsService userDetailsService;
 
     private final AccountService accountService;
+
+    private final JwtService jwtService;
+
+    private final TokenService tokenService;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody AccountDto registerRequest) {
@@ -39,7 +48,17 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return ResponseEntity.ok("Login successful");
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String accessToken = jwtService.generateAccessToken(userDetails);
+        String refreshToken = jwtService.generateRefreshToken(userDetails);
+        tokenService.saveRefreshToken(userDetails.getUsername(), refreshToken);
+        return ResponseEntity
+                .ok()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .body(AuthResponse.builder()
+                        .accessToken(accessToken)
+                        .refreshToken(refreshToken)
+                        .build());
     }
 
 
