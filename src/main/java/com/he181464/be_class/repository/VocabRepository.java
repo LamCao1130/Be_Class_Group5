@@ -10,4 +10,6 @@ import java.util.Optional;
 @Repository
 public interface VocabRepository extends JpaRepository<Vocabulary,Long> {
     List<Optional<Vocabulary>> findByLessonId(Long lessonId);
+    void deleteByLessonId(Long id);
+
 }
