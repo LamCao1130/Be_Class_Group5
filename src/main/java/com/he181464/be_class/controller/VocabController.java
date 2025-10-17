@@ -1,7 +1,6 @@
 package com.he181464.be_class.controller;
 
-import com.he181464.be_class.dto.VocabularyCreateDto;
-import com.he181464.be_class.model.response.VocabularyResponse;
+import com.he181464.be_class.dto.VocabularyDto;
 import com.he181464.be_class.service.VocabService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,19 +20,14 @@ public class VocabController {
     private final VocabService vocabService;
 
     @PostMapping("create")
-    public ResponseEntity<VocabularyResponse> createVocab(@Valid @RequestBody VocabularyCreateDto vocabularyCreateDto){
-        return ResponseEntity.ok(vocabService.createVocabulary(vocabularyCreateDto));
-    }
-
-    @PostMapping("createMutipleVocab")
-    public ResponseEntity<?> createMutipleVocab(@Validated @RequestBody List<VocabularyCreateDto> vocabularyCreateDto){
-        vocabService.createListVocabulary(vocabularyCreateDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<?> createVocab(@Valid @RequestBody List<VocabularyDto> vocabularyCreateDto){
+        vocabularyCreateDto.stream().forEach(voc->voc.setId(null));
+        return ResponseEntity.ok(vocabService.createListVocabulary(vocabularyCreateDto));
     }
 
     @GetMapping("/lesson/{id}")
-    public ResponseEntity<List<VocabularyResponse>> getVocabById(@PathVariable("id") Long lessonId) {
-        List<VocabularyResponse> vocabularies = vocabService.getVocabulariesByLesson(lessonId);
+    public ResponseEntity<?> getVocabById(@PathVariable("id") Long lessonId) {
+        List<VocabularyDto> vocabularies = vocabService.getVocabulariesByLesson(lessonId);
         return ResponseEntity.ok(vocabularies);
     }
 
@@ -43,9 +37,4 @@ public class VocabController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("deleteMultiple")
-    public ResponseEntity<?> deleteMultiple(@RequestBody List<Long> vocabIds){
-        vocabService.deleteMultipleVocabularies(vocabIds);
-        return ResponseEntity.ok().build();
-    }
 }

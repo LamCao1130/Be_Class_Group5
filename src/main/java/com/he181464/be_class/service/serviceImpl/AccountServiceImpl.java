@@ -2,6 +2,7 @@ package com.he181464.be_class.service.serviceImpl;
 
 import com.he181464.be_class.dto.AccountDto;
 import com.he181464.be_class.entity.Account;
+import com.he181464.be_class.exception.ObjectExistingException;
 import com.he181464.be_class.repository.AccountRepository;
 import com.he181464.be_class.service.AccountService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,9 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     public boolean createAccount(AccountDto accountDto) {
+        if(accountRepository.findByEmail(accountDto.getEmail()).isPresent()) {
+            throw new ObjectExistingException("Email already exists");
+        }
         Account account = new Account();
         account.setEmail(accountDto.getEmail());
         account.setPassword(passwordEncoder.encode(accountDto.getPassword()));

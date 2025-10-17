@@ -1,21 +1,19 @@
 package com.he181464.be_class.service;
 
-import com.he181464.be_class.dto.VocabularyCreateDto;
-import com.he181464.be_class.dto.VocabularyUpdateDto;
-import com.he181464.be_class.model.response.VocabularyResponse;
+import com.he181464.be_class.dto.VocabularyDto;
+import org.springframework.web.multipart.MultipartFile;
+
 
 import java.util.List;
 
 public interface VocabService {
-    void createListVocabulary(List<VocabularyCreateDto> vocabularyCreateDtos);
+    List<VocabularyDto> createListVocabulary(List<VocabularyDto> vocabularyCreateDtos);
 
-    VocabularyResponse createVocabulary(VocabularyCreateDto vocabularyCreateDto);
-
-    VocabularyResponse updateVocabulary(VocabularyUpdateDto vocabularyDto);
+    VocabularyDto updateVocabulary(VocabularyDto vocabularyDto);
 
     void deleteVocabulary(Long id);
 
-    void deleteMultipleVocabularies(List<Long> id);
+    List<VocabularyDto> getVocabulariesByLesson(Long id);
 
-    List<VocabularyResponse> getVocabulariesByLesson(Long id);
+    List<VocabularyDto> importVocabFromExcelFile(MultipartFile file, Long lessonId);
 }

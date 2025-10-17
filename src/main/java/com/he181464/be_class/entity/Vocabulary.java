@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 public class Vocabulary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "english_word",nullable = false)
@@ -28,21 +29,15 @@ public class Vocabulary {
     private String vietnameseMeaning;
 
     @Column(name = "example_sentence",nullable = false)
-    private String exampleSample;
-
-    @Column(name = "sort_order",nullable = false)
-    private int sortOrder;
+    private String exampleSentence;
 
     @Column(name = "word_type")
     private WordType wordType;
 
-    @Column(name = "image_url")
-    private String imageUrl;
-
-    @Column(name = "example_audio")
-    private String exampleAudio;
+    @Column(name = "lesson_id",nullable = false)
+    private Long lessonId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lesson_id",referencedColumnName = "id")
+    @JoinColumn(name = "lesson_id",referencedColumnName = "id",insertable = false, updatable = false)
     private Lesson lesson;
 }
