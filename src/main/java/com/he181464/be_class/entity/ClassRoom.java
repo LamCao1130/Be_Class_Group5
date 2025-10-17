@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.Persistent;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -43,6 +44,9 @@ public class ClassRoom {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Account teacher;
+
+    @OneToMany(mappedBy = "classroom",fetch = FetchType.LAZY)
+    private List<Lesson> lessons;
 
     @PrePersist
     public void prePersist() {
