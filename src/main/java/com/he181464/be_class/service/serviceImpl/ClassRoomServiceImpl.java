@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -73,6 +74,20 @@ public class ClassRoomServiceImpl implements ClassRoomService {
     @Override
     public Page<ClassRoomDto> searchClassRooms(int page, int size) {
         return null;
+    }
+
+    @Override
+    public List<ClassRoomDto> getClassRoomsByTeacherId(Long teacherId) {
+        return classRoomRepository.findByTeacherIdAndStatus(teacherId, AppConstant.STATUS_ACTIVE).stream().map(classRoom -> {
+            ClassRoomDto dto = new ClassRoomDto();
+            dto.setId(classRoom.getId());
+            dto.setName(classRoom.getName());
+            dto.setTitle(classRoom.getTitle());
+            dto.setCode(classRoom.getCode());
+            dto.setTeacherId(classRoom.getTeacherId());
+            dto.setCreatedDate(classRoom.getCreatedDate());
+            return dto;
+        }).toList();
     }
 
 
