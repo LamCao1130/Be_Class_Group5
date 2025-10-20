@@ -32,7 +32,7 @@ public class Vocabulary {
     private String exampleSentence;
 
     @Column(name = "word_type")
-    private WordType wordType;
+    private String wordType;
 
     @Column(name = "lesson_id",nullable = false)
     private Long lessonId;
