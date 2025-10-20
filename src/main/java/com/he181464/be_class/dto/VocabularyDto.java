@@ -24,7 +24,7 @@ public class VocabularyDto {
 
     private String exampleSample;
 
-     private WordType wordType;
+     private String wordType;
 
     private Long lessonId;
 
