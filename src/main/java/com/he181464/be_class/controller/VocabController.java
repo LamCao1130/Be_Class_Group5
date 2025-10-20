@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -37,4 +38,10 @@ public class VocabController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("import")
+    public ResponseEntity<?> importVocab(@RequestParam("file") MultipartFile file,
+                                         @RequestParam("lessonId") Long lessonId) {
+        vocabService.importVocabFromExcelFile(file, lessonId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 }
