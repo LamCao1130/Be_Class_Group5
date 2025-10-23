@@ -1,6 +1,6 @@
 package com.he181464.be_class.controller;
 
-import com.he181464.be_class.dto.AccountDto;
+import com.he181464.be_class.dto.AccountRequestDto;
 import com.he181464.be_class.dto.LoginDto;
 import com.he181464.be_class.jwt.JwtService;
 import com.he181464.be_class.model.response.AuthResponse;
@@ -33,7 +33,7 @@ public class AuthController {
     private final TokenService tokenService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody AccountDto registerRequest) {
+    public ResponseEntity<?> register(@RequestBody AccountRequestDto registerRequest) {
         boolean isRegistered = accountService.createAccount(registerRequest);
         if (isRegistered) {
             return ResponseEntity.ok("Registration successful");

@@ -39,7 +39,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/login", "/api/register", "/api/v1/public/**").permitAll()
                         .requestMatchers("/api/teacher/**").authenticated()
                         .requestMatchers("/api/student/**").authenticated()
-                        .requestMatchers("/api/admin/**").authenticated()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement((session) ->
