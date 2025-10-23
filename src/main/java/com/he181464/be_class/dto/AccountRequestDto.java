@@ -12,7 +12,6 @@ import java.time.LocalDate;
 public class AccountRequestDto {
 
     private String email;
-    private String name;
     private String fullName;
     private String password;
     private Long roleId;

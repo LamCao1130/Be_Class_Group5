@@ -34,7 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String token = header.substring(7).trim();
+        String token = header.substring(7);
 
         log.info("Attempting to authenticate using token {}", token);
 
