@@ -17,6 +17,6 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<AccountResponseDto> getAllAccount() {
-        return accountRepository.findAll().stream().map(accountMapper::toDTO).toList();
+        return accountRepository.findAllByStatusTrue().stream().map(accountMapper::toDTO).toList();
     }
 }

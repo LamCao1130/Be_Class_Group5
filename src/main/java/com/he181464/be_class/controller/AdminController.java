@@ -18,7 +18,7 @@ public class AdminController {
     private final AccountService accountService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<AccountResponseDto>> getAllAccount(){
         List<AccountResponseDto> allAccount = accountService.getAllAccount();
         return ResponseEntity.ok(allAccount);
