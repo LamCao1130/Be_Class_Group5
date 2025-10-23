@@ -9,5 +9,8 @@ import java.util.List;
 public interface AccountService {
 
     boolean createAccount(AccountRequestDto accountDto);
+
     List<AccountResponseDto> getAllAccount();
+
+
 }
