@@ -5,6 +5,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.he181464.be_class.constant.AppConstant;
 import com.he181464.be_class.dto.AccountDto;
 import com.he181464.be_class.entity.Account;
 import com.he181464.be_class.exception.ObjectExistingException;
@@ -50,7 +51,7 @@ public class AccountServiceImpl implements AccountService {
         account.setAddress(accountDto.getAddress());
         account.setRoleId(accountDto.getRoleId());
         account.setDateOfBirth(accountDto.getDateOfBirth());
-        account.setStatus(accountDto.getStatus());
+        account.setStatus(1);
         account.setCreatedAt(LocalDateTime.now());
         return accountRepository.save(account) != null;
     }
