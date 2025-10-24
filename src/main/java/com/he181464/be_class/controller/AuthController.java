@@ -70,7 +70,8 @@ public class AuthController {
     @PostMapping("/v1/public/2fa-verify")
     public ResponseEntity<?> verify2FA(@RequestBody Verify2FADto verify2FADto) {
         try {
-            if (verify2FADto.getBase32Code() != null && !verify2FADto.getBase32Code().isEmpty()) {
+            Account accountCheck = accountService.getAccountByEmailToGenerate2Fa(verify2FADto.getEmail());
+            if (accountCheck.getSecretCode() == null || accountCheck.getSecretCode().trim().isEmpty()) {
                 // Setup 2FA for the first time
                 Account account = accountService.getAccountByEmailToGenerate2Fa(verify2FADto.getEmail());
                 account.setSecretCode(verify2FADto.getBase32Code());
