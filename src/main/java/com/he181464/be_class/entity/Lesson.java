@@ -17,33 +17,25 @@ public class Lesson {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private long id;
+    private Long id;
 
-    @Column(name = "title", nullable = false)
+    @Column(name = "class_room_id", nullable = false)
+    private Long classRoomId;
+
+    @Column(length = 255)
     private String title;
 
-    @Column(name = "description", nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String description;
 
-    @OneToMany(mappedBy = "lesson", fetch = FetchType.LAZY)
-    private List<Vocabulary> vocabularies;
+    @Column(columnDefinition = "TEXT")
+    private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "class_room_id")
-    private ClassRoom classroom;
+    @Column(name = "status")
+    private Integer status;
 
-    @Column(name = "is_published", columnDefinition = "bit default 1")
-    private boolean isPublish;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @Column(name = "has_homework", columnDefinition = "bit default 1")
-    private boolean hasHomework ;
+    @Column(name = "has_homework")
+    private Integer hasHomework;
 
     @Column(name = "homework_instructions", columnDefinition = "TEXT")
     private String homeworkInstructions;
@@ -54,6 +46,13 @@ public class Lesson {
     @Column(name = "homework_max_score")
     private Integer homeworkMaxScore;
 
-    @Column(name = "homework_attachment_url")
+    @Column(name = "homework_attachment_url", length = 500)
     private String homeworkAttachmentUrl;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
 }

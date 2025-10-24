@@ -83,6 +83,14 @@ public class VocabServiceImpl implements VocabService {
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
                 if (row == null) continue;
+                Vocabulary vocabulary = new Vocabulary();
+                vocabulary.setEnglishWord(row.getCell(0).getStringCellValue());
+                vocabulary.setPronunciation(row.getCell(1).getStringCellValue());
+                vocabulary.setVietnameseMeaning(row.getCell(2).getStringCellValue());
+                vocabulary.setWordType(row.getCell(3).getStringCellValue());
+                vocabulary.setExampleSentence(row.getCell(4).getStringCellValue());
+                vocabulary.setLessonId(lessonId);
+                vocabRepository.save(vocabulary);
             }
             return null;
 

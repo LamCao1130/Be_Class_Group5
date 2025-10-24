@@ -23,5 +23,9 @@ public class ClassRoomDto {
 
     private String teacherName;
 
+    private String code;
+
+    private String status;
+
     private LocalDateTime createdDate;
 }
