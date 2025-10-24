@@ -17,4 +17,6 @@ public interface ClassRoomService {
     Page<ClassRoomDto> searchClassRooms(int page, int size);
 
     List<ClassRoomDto> getClassRoomsByTeacherId(Long teacherId);
+
+    ClassRoomDto getClassRoomById(Long id);
 }

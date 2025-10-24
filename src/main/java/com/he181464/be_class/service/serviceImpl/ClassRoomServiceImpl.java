@@ -3,6 +3,7 @@ package com.he181464.be_class.service.serviceImpl;
 import com.he181464.be_class.constant.AppConstant;
 import com.he181464.be_class.dto.ClassRoomDto;
 import com.he181464.be_class.entity.ClassRoom;
+import com.he181464.be_class.mapper.ClassRoomMapper;
 import com.he181464.be_class.repository.ClassRoomRepository;
 import com.he181464.be_class.service.ClassRoomService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,8 @@ import java.util.UUID;
 public class ClassRoomServiceImpl implements ClassRoomService {
 
     private final ClassRoomRepository classRoomRepository;
+
+    private final ClassRoomMapper classRoomMapper;
 
     @Override
     @Transactional
@@ -88,6 +91,15 @@ public class ClassRoomServiceImpl implements ClassRoomService {
             dto.setCreatedDate(classRoom.getCreatedDate());
             return dto;
         }).toList();
+    }
+
+    @Override
+    public ClassRoomDto getClassRoomById(Long id) {
+        ClassRoom classRoom = classRoomRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Lớp học không tồn tại"));
+        ClassRoomDto classRoomDto = classRoomMapper.toClassRoomDto(classRoom);
+        classRoomDto.setTeacherName(classRoom.getTeacher().getFullName());
+        return classRoomDto;
     }
 
 
