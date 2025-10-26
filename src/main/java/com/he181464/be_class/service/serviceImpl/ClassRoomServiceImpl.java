@@ -90,6 +90,21 @@ public class ClassRoomServiceImpl implements ClassRoomService {
         }).toList();
     }
 
+    @Override
+    public ClassRoomDto getClassRoomsByClassroomId(Long id) {
+        ClassRoom classRoom = classRoomRepository.findById(id).orElseThrow(
+                () ->new IllegalArgumentException("Không tìm thấy ClassroomId")
+        );
+        ClassRoomDto dto = new ClassRoomDto();
+        dto.setId(classRoom.getId());
+        dto.setName(classRoom.getName());
+        dto.setTitle(classRoom.getTitle());
+        dto.setCode(classRoom.getCode());
+        dto.setTeacherId(classRoom.getTeacherId());
+        dto.setCreatedDate(classRoom.getCreatedDate());
+        return dto;
+    }
+
 
     private  String generateCode() {
         String uuid = UUID.randomUUID().toString().replaceAll("-", "");
