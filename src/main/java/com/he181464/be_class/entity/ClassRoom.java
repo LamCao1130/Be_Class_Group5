@@ -45,8 +45,6 @@ public class ClassRoom {
     @JoinColumn(name = "teacher_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Account teacher;
 
-    @OneToMany(mappedBy = "classroom",fetch = FetchType.LAZY)
-    private List<Lesson> lessons;
 
     @PrePersist
     public void prePersist() {
