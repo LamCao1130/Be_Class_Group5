@@ -5,13 +5,10 @@ import com.he181464.be_class.service.LessonService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/public/lessons")
+@RequestMapping("/api/v1/lessons")
 @RequiredArgsConstructor
 public class LessonController {
 
@@ -22,6 +19,11 @@ public class LessonController {
         lessonDto.setId(null);
         LessonDto createdLesson = lessonService.createLesson(lessonDto);
         return ResponseEntity.ok(createdLesson);
+    }
+
+    @GetMapping("/get-by-classRoomId/{id}")
+    public ResponseEntity<?> getLessonsByClassRoomId(@PathVariable Long id) {
+        return ResponseEntity.ok(lessonService.getLessonsByClassRoomId(id));
     }
 
 
