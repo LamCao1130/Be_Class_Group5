@@ -31,9 +31,9 @@ public class ClassRoomController {
         return ResponseEntity.ok(classRoomService.getClassRoomsByTeacherId(teacherId));
     }
 
-    @GetMapping("/get-by-classroom/{classroomId}")
-    public ResponseEntity<?> getClassRoomsByClassroomId(@PathVariable Long classroomId) {
-        return ResponseEntity.ok(classRoomService.getClassRoomsByClassroomId(classroomId));
+    @GetMapping("/get/{id}")
+    public ResponseEntity<?> getClassRoomById(@PathVariable Long id) {
+        return ResponseEntity.ok(classRoomService.getClassRoomById(id));
     }
 
 }
