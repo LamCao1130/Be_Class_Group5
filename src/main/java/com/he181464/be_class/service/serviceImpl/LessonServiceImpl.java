@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,5 +32,11 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public LessonDto updateLesson(LessonDto lessonDto) {
         return null;
+    }
+
+    @Override
+    public List<LessonDto> getLessonsByClassRoomId(Long classRoomId) {
+        List<Lesson> lessons = lessonRepository.findByClassRoomId(classRoomId);
+        return lessons.stream().map(lessonMapper::toLessonDto).toList();
     }
 }
