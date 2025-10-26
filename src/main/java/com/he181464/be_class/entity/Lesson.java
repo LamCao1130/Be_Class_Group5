@@ -25,10 +25,10 @@ public class Lesson {
     @Column(length = 255)
     private String title;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "content",columnDefinition = "TEXT")
     private String content;
 
     @Column(name = "status")

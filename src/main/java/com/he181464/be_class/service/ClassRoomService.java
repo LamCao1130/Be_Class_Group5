@@ -18,5 +18,5 @@ public interface ClassRoomService {
 
     List<ClassRoomDto> getClassRoomsByTeacherId(Long teacherId);
 
-    ClassRoomDto getClassRoomsByClassroomId(Long id);
+    ClassRoomDto getClassRoomById(Long id);
 }
