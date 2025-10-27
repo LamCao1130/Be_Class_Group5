@@ -26,4 +26,14 @@ public class ClassRoomController {
         return ResponseEntity.ok(classRoomService.updateClassRoom(classRoomDto));
     }
 
+    @GetMapping("/get-by-teacher/{teacherId}")
+    public ResponseEntity<?> getClassRoomsByTeacherId(@PathVariable Long teacherId) {
+        return ResponseEntity.ok(classRoomService.getClassRoomsByTeacherId(teacherId));
+    }
+
+    @GetMapping("/get/{id}")
+    public ResponseEntity<?> getClassRoomById(@PathVariable Long id) {
+        return ResponseEntity.ok(classRoomService.getClassRoomById(id));
+    }
+
 }

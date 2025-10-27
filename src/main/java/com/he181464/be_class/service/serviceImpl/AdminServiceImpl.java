@@ -1,6 +1,6 @@
 package com.he181464.be_class.service.serviceImpl;
 
-import com.he181464.be_class.dto.AccountRequestDto;
+import com.he181464.be_class.dto.AccountDto;
 import com.he181464.be_class.dto.AccountResponseDto;
 import com.he181464.be_class.entity.Account;
 import com.he181464.be_class.entity.Role;
@@ -9,7 +9,6 @@ import com.he181464.be_class.repository.AccountRepository;
 import com.he181464.be_class.repository.RoleRepository;
 import com.he181464.be_class.service.AdminService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.ObjectNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -32,15 +31,15 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public AccountResponseDto createAccountByAdmin(AccountRequestDto accountRequestDto) {
-        Account account = accountMapper.toEntity(accountRequestDto);
-        account.setPassword(passwordEncoder.encode(accountRequestDto.getPassword()));
+    public AccountResponseDto createAccountByAdmin(AccountDto accountDto) {
+        Account account = accountMapper.toEntity(accountDto);
+        account.setPassword(passwordEncoder.encode(accountDto.getPassword()));
         account.setCreatedAt(LocalDateTime.now());
         account.setUpdatedAt(null);
-        Role role = roleRepository.findById(accountRequestDto.getRoleId())
-                .orElseThrow(() -> new NoSuchElementException("khong tim thay role id" +accountRequestDto.getRoleId()));
+        Role role = roleRepository.findById(accountDto.getRoleId())
+                .orElseThrow(() -> new NoSuchElementException("khong tim thay role id" + accountDto.getRoleId()));
         account.setRole(role);
-        account.setRoleId(accountRequestDto.getRoleId());
+        account.setRoleId(accountDto.getRoleId());
 
         accountRepository.save(account);
         return accountMapper.toDTO(account);
@@ -56,20 +55,20 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public AccountResponseDto editAccount(Long accountId, AccountRequestDto accountRequestDto) {
+    public AccountResponseDto editAccount(Long accountId, AccountDto accountDto) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new NoSuchElementException("khong tim thay accound id" +accountId));
-        accountMapper.updateEntityFromDTO(accountRequestDto,account);
-        if(StringUtils.hasText(accountRequestDto.getPassword())){
-            account.setPassword(passwordEncoder.encode(accountRequestDto.getPassword()));
+        accountMapper.updateEntityFromDTO(accountDto,account);
+        if(StringUtils.hasText(accountDto.getPassword())){
+            account.setPassword(passwordEncoder.encode(accountDto.getPassword()));
         }
         account.setUpdatedAt(LocalDateTime.now());
 
-        if(accountRequestDto.getRoleId() != null){
-            Role role = roleRepository.findById(accountRequestDto.getRoleId())
-                    .orElseThrow(() -> new NoSuchElementException("khong tim thay role id" +accountRequestDto.getRoleId()));
+        if(accountDto.getRoleId() != null){
+            Role role = roleRepository.findById(accountDto.getRoleId())
+                    .orElseThrow(() -> new NoSuchElementException("khong tim thay role id" + accountDto.getRoleId()));
             account.setRole(role);
-            account.setRoleId(accountRequestDto.getRoleId());
+            account.setRoleId(accountDto.getRoleId());
         }
 
         accountRepository.save(account);

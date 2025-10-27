@@ -56,6 +56,9 @@ public class Account {
     @Column(name = "role_id")
     private Long roleId;
 
+    @Column(name = "secret_code")
+    private String secretCode;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Role role;

@@ -9,9 +9,10 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountRequestDto {
+public class AccountDto {
 
     private String email;
+    private String name;
     private String fullName;
     private String password;
     private Long roleId;

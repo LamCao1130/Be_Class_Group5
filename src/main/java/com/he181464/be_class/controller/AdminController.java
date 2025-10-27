@@ -1,8 +1,7 @@
 package com.he181464.be_class.controller;
 
-import com.he181464.be_class.dto.AccountRequestDto;
+import com.he181464.be_class.dto.AccountDto;
 import com.he181464.be_class.dto.AccountResponseDto;
-import com.he181464.be_class.service.AccountService;
 import com.he181464.be_class.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +25,8 @@ public class AdminController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<AccountResponseDto> createAccount(@RequestBody AccountRequestDto accountRequestDto){
-        AccountResponseDto createdAccount = adminService.createAccountByAdmin(accountRequestDto);
+    public ResponseEntity<AccountResponseDto> createAccount(@RequestBody AccountDto accountDto){
+        AccountResponseDto createdAccount = adminService.createAccountByAdmin(accountDto);
         return ResponseEntity.ok(createdAccount);
     }
 
@@ -40,8 +39,8 @@ public class AdminController {
 
     @PutMapping("/edit/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<AccountResponseDto> editAccount(@PathVariable("id") Long accountId, @RequestBody AccountRequestDto accountRequestDto){
-        AccountResponseDto accountResponseDto = adminService.editAccount(accountId,accountRequestDto);
+    public ResponseEntity<AccountResponseDto> editAccount(@PathVariable("id") Long accountId, @RequestBody AccountDto accountDto){
+        AccountResponseDto accountResponseDto = adminService.editAccount(accountId, accountDto);
         return ResponseEntity.ok(accountResponseDto);
     }
 }
