@@ -3,6 +3,7 @@ package com.he181464.be_class.service.serviceImpl;
 import com.he181464.be_class.constant.AppConstant;
 import com.he181464.be_class.dto.ClassRoomDto;
 import com.he181464.be_class.entity.ClassRoom;
+import com.he181464.be_class.mapper.ClassRoomMapper;
 import com.he181464.be_class.repository.ClassRoomRepository;
 import com.he181464.be_class.service.ClassRoomService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -19,6 +21,8 @@ import java.util.UUID;
 public class ClassRoomServiceImpl implements ClassRoomService {
 
     private final ClassRoomRepository classRoomRepository;
+
+    private final ClassRoomMapper classRoomMapper;
 
     @Override
     @Transactional
@@ -73,6 +77,29 @@ public class ClassRoomServiceImpl implements ClassRoomService {
     @Override
     public Page<ClassRoomDto> searchClassRooms(int page, int size) {
         return null;
+    }
+
+    @Override
+    public List<ClassRoomDto> getClassRoomsByTeacherId(Long teacherId) {
+        return classRoomRepository.findByTeacherIdAndStatus(teacherId, AppConstant.STATUS_ACTIVE).stream().map(classRoom -> {
+            ClassRoomDto dto = new ClassRoomDto();
+            dto.setId(classRoom.getId());
+            dto.setName(classRoom.getName());
+            dto.setTitle(classRoom.getTitle());
+            dto.setCode(classRoom.getCode());
+            dto.setTeacherId(classRoom.getTeacherId());
+            dto.setCreatedDate(classRoom.getCreatedDate());
+            return dto;
+        }).toList();
+    }
+
+    @Override
+    public ClassRoomDto getClassRoomById(Long id) {
+        ClassRoom classRoom = classRoomRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Lớp học không tồn tại"));
+        ClassRoomDto classRoomDto = classRoomMapper.toClassRoomDto(classRoom);
+        classRoomDto.setTeacherName(classRoom.getTeacher().getFullName());
+        return classRoomDto;
     }
 
 

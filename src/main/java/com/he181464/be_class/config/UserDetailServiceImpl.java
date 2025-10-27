@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class UserDetailServiceImpl implements UserDetailsService {
 
     private final AccountRepository accountRepository;
@@ -23,7 +24,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Account account = accountRepository.findByEmail(username).orElseThrow(() -> new ObjectExistingException("User not found with username: " + username));
 
-        GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + account.getRole().getName());
+        GrantedAuthority authority = new SimpleGrantedAuthority(account.getRole().getName());
 
         UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
                 .username(account.getEmail())
