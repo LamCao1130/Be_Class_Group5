@@ -4,6 +4,7 @@ import com.he181464.be_class.dto.AccountDto;
 import com.he181464.be_class.dto.AccountResponseDto;
 import com.he181464.be_class.service.AdminService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -16,11 +17,12 @@ import java.util.List;
 public class AdminController {
     private final AdminService adminService;
 
-    @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<AccountResponseDto>> getAllAccount(){
-        List<AccountResponseDto> allAccount = adminService.getAllAccount();
-        return ResponseEntity.ok(allAccount);
+    @GetMapping("/teacher")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Page<AccountResponseDto>> getAllAccountTeacher(@RequestParam(defaultValue = "0") int page,
+                                                                         @RequestParam(defaultValue = "10") int size){
+        Page<AccountResponseDto> allAccountTeacher = adminService.getAllTeacherAccount(page,size);
+        return ResponseEntity.ok(allAccountTeacher);
     }
 
     @PostMapping("/create")
