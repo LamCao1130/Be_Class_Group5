@@ -9,12 +9,15 @@ import com.he181464.be_class.repository.AccountRepository;
 import com.he181464.be_class.repository.RoleRepository;
 import com.he181464.be_class.service.AdminService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -25,9 +28,12 @@ public class AdminServiceImpl implements AdminService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
 
+
     @Override
-    public List<AccountResponseDto> getAllAccount() {
-        return accountRepository.findAllByStatusTrue().stream().map(accountMapper::toDTO).toList();
+    public Page<AccountResponseDto> getAllTeacherAccount(int page, int size) {
+        Pageable pageable = PageRequest.of(page,size, Sort.by("id").ascending());
+        Page<Account> accountPage = accountRepository.findByRole(2,pageable);
+        return accountPage.map(accountMapper::toDTO);
     }
 
     @Override
