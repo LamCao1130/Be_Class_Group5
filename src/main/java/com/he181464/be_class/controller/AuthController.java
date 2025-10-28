@@ -10,16 +10,21 @@ import com.he181464.be_class.model.response.TwoFAData;
 import com.he181464.be_class.service.AccountService;
 import com.he181464.be_class.service.TokenService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.stream.Collectors;
+
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
