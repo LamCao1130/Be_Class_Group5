@@ -28,7 +28,7 @@ public class Lesson {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "content",columnDefinition = "TEXT")
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
     @Column(name = "status")
@@ -55,4 +55,18 @@ public class Lesson {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @OneToMany(mappedBy = "lessonId", fetch = FetchType.LAZY)
+    private List<HomeworkSubmissions> submissions;
+
+    @OneToMany(mappedBy = "lesson", fetch = FetchType.LAZY)
+    private List<LessonNotes> lessonNotes;
+
+    @OneToMany(mappedBy = "lesson", fetch = FetchType.LAZY)
+    private List<ReadingPassage> readingPassages;
+
+    @OneToMany(mappedBy = "lesson", fetch = FetchType.LAZY)
+    private List<GrammarPoint> grammarPoints;
+
+    @OneToMany(mappedBy = "lesson", fetch = FetchType.LAZY)
+    private List<QuestionType> questionTypes;
 }

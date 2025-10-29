@@ -8,10 +8,10 @@ import com.he181464.be_class.repository.LessonRepository;
 import com.he181464.be_class.repository.VocabRepository;
 import com.he181464.be_class.service.VocabService;
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,7 +34,7 @@ public class VocabServiceImpl implements VocabService {
                 .map(vocabMapper::toVocabularyEntity)
                 .toList();
 
-        List<Vocabulary> check= vocabRepository.saveAll(vocabularies);
+        List<Vocabulary> check = vocabRepository.saveAll(vocabularies);
         return check.stream()
                 .map(vocabMapper::toVocabularyDto)
                 .toList();
@@ -43,13 +43,13 @@ public class VocabServiceImpl implements VocabService {
 
     @Override
     public VocabularyDto updateVocabulary(VocabularyDto vocabularyDto) {
-        if(vocabularyDto.getId() == null){
+        if (vocabularyDto.getId() == null) {
             throw new IllegalArgumentException("Id khong duoc de trong");
         }
         Vocabulary existingVocabulary = vocabRepository.findById(vocabularyDto.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Khong tim thay vocabulary voi id: " + vocabularyDto.getId()));
         Lesson lesson = lessonRepository.findById(vocabularyDto.getLessonId())
-                .orElseThrow(()-> new IllegalArgumentException(("Khong tim thay lesson Id")));
+                .orElseThrow(() -> new IllegalArgumentException(("Khong tim thay lesson Id")));
         existingVocabulary.setEnglishWord(vocabularyDto.getEnglishWord());
         existingVocabulary.setVietnameseMeaning(vocabularyDto.getVietnameseMeaning());
         existingVocabulary.setExampleSentence(vocabularyDto.getExampleSample());
@@ -65,11 +65,17 @@ public class VocabServiceImpl implements VocabService {
         vocabRepository.deleteById(id);
     }
 
+    @Override
+    public VocabularyDto editVocab(VocabularyDto vocabularyDto) {
+        vocabRepository.save(vocabMapper.toVocabularyEntity(vocabularyDto));
+        return vocabularyDto;
+    }
+
 
     @Override
     public List<VocabularyDto> getVocabulariesByLesson(Long id) {
         return vocabRepository.findByLessonId(id).stream()
-                .map((item) ->vocabMapper.toVocabularyDto(item.orElseThrow())).toList();
+                .map((item) -> vocabMapper.toVocabularyDto(item.orElseThrow())).toList();
     }
 
     @Override
@@ -98,8 +104,6 @@ public class VocabServiceImpl implements VocabService {
             throw new RuntimeException("Error reading Excel file: " + e.getMessage(), e);
         }
     }
-
-
 
 
 }

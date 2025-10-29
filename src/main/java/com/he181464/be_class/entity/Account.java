@@ -66,4 +66,15 @@ public class Account {
     @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
     private List<Token> tokens;
 
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+    private List<Exam> examList;
+
+    @OneToMany(mappedBy = "studentId", fetch = FetchType.LAZY)
+    private List<HomeworkSubmissions> homeworkSubmissions;
+
+    @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
+    private List<LessonNotes> lessonNotes;
+
+    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
+    private List<ExamAttempts> examAttempts;
 }

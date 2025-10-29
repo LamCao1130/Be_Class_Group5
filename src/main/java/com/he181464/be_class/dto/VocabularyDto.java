@@ -1,6 +1,5 @@
 package com.he181464.be_class.dto;
 
-import com.he181464.be_class.constant.WordType;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,7 +23,7 @@ public class VocabularyDto {
 
     private String exampleSample;
 
-     private String wordType;
+    private String wordType;
 
     private Long lessonId;
 

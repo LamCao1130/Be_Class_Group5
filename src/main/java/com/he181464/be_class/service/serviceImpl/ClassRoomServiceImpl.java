@@ -28,8 +28,8 @@ public class ClassRoomServiceImpl implements ClassRoomService {
     @Transactional
     public ClassRoomDto createClassRoom(ClassRoomDto classRoomDto) {
         String codeCheck = generateCode();
-        while (true){
-            if(classRoomRepository.existsByCode(codeCheck)){
+        while (true) {
+            if (classRoomRepository.existsByCode(codeCheck)) {
                 codeCheck = generateCode();
             } else {
                 break;
@@ -50,7 +50,7 @@ public class ClassRoomServiceImpl implements ClassRoomService {
 
     @Override
     public ClassRoomDto updateClassRoom(ClassRoomDto classRoomDto) {
-        if(classRoomDto.getId() == null) {
+        if (classRoomDto.getId() == null) {
             throw new IllegalArgumentException("ID lớp học không được để trống");
         }
         ClassRoom classRoom = classRoomRepository.findById(classRoomDto.getId())
@@ -66,7 +66,7 @@ public class ClassRoomServiceImpl implements ClassRoomService {
 
     @Override
     public void deleteClassRoom(Long id) {
-        if(!classRoomRepository.existsById(id)) {
+        if (!classRoomRepository.existsById(id)) {
             throw new IllegalArgumentException("Lớp học không tồn tại");
         }
         ClassRoom classRoom = classRoomRepository.findById(id).get();
@@ -103,7 +103,7 @@ public class ClassRoomServiceImpl implements ClassRoomService {
     }
 
 
-    private  String generateCode() {
+    private String generateCode() {
         String uuid = UUID.randomUUID().toString().replaceAll("-", "");
         return uuid.substring(0, 8).toUpperCase(); // VD: "A9F3D1B2"
     }

@@ -6,9 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Persistent;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -44,13 +44,16 @@ public class ClassRoom {
     @JoinColumn(name = "teacher_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Account teacher;
 
+    @OneToMany(mappedBy = "classRoom")
+    private List<Exam> exams;
+
+
     @PrePersist
     public void prePersist() {
         if (status == null) {
             status = AppConstant.STATUS_ACTIVE;
         }
     }
-
 
 
 }

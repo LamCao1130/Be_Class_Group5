@@ -1,6 +1,5 @@
 package com.he181464.be_class.dto;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;

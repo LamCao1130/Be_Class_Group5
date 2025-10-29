@@ -2,7 +2,6 @@ package com.he181464.be_class.service;
 
 import com.he181464.be_class.dto.ClassRoomDto;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
