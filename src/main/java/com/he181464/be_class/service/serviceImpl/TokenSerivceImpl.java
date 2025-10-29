@@ -4,7 +4,6 @@ import com.he181464.be_class.entity.Account;
 import com.he181464.be_class.entity.Token;
 import com.he181464.be_class.repository.AccountRepository;
 import com.he181464.be_class.repository.TokenRepository;
-import com.he181464.be_class.service.AccountService;
 import com.he181464.be_class.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,9 +21,9 @@ public class TokenSerivceImpl implements TokenService {
     @Override
     public Token saveRefreshToken(String username, String rToken) {
 
-        Account account = accountRepository.findByEmail(username).orElseThrow(()-> new RuntimeException("User not found"));
+        Account account = accountRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("User not found"));
 
-        Token token =  Token.builder()
+        Token token = Token.builder()
                 .token(rToken)
                 .accountId(account.getId())
                 .tokenType("Bearer")
