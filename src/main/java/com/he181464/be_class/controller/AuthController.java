@@ -18,7 +18,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -77,7 +80,7 @@ public class AuthController {
                 account.setSecretCode(verify2FADto.getBase32Code());
                 Integer code = Integer.parseInt(verify2FADto.getSecretCode());
 
-                if(accountService.verifyCode(verify2FADto.getBase32Code(), code)){
+                if (accountService.verifyCode(verify2FADto.getBase32Code(), code)) {
                     account.setSecretCode(verify2FADto.getBase32Code());
                     accountService.saveAccountSecretKey(account);
                     UserDetails userDetails = userDetailsService.loadUserByUsername(account.getEmail());
@@ -94,8 +97,7 @@ public class AuthController {
                                     .accessToken(accessToken)
                                     .refreshToken(refreshToken)
                                     .build());
-                }
-                else{
+                } else {
                     return ResponseEntity.badRequest().body("Invalid 2FA code during setup");
                 }
 

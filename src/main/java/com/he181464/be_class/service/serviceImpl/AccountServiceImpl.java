@@ -5,7 +5,6 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
-import com.he181464.be_class.constant.AppConstant;
 import com.he181464.be_class.dto.AccountDto;
 import com.he181464.be_class.entity.Account;
 import com.he181464.be_class.exception.ObjectExistingException;
@@ -22,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Base64;
 
@@ -40,7 +38,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     public boolean createAccount(AccountDto accountDto) {
-        if(accountRepository.findByEmail(accountDto.getEmail()).isPresent()) {
+        if (accountRepository.findByEmail(accountDto.getEmail()).isPresent()) {
             throw new ObjectExistingException("Email already exists");
         }
         Account account = new Account();

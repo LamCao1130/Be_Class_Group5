@@ -3,7 +3,6 @@ package com.he181464.be_class.service;
 import com.he181464.be_class.dto.VocabularyDto;
 import org.springframework.web.multipart.MultipartFile;
 
-
 import java.util.List;
 
 public interface VocabService {
@@ -12,6 +11,8 @@ public interface VocabService {
     VocabularyDto updateVocabulary(VocabularyDto vocabularyDto);
 
     void deleteVocabulary(Long id);
+
+    VocabularyDto editVocab(VocabularyDto vocabularyDto);
 
     List<VocabularyDto> getVocabulariesByLesson(Long id);
 

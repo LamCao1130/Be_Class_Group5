@@ -7,7 +7,7 @@ spring :
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/npc_lessons?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: root
-    password: root
+    password: Lam30112004
   jpa:
     hibernate:
       ddl-auto: none
