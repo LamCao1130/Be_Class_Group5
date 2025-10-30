@@ -6,6 +6,8 @@ import com.he181464.be_class.entity.Account;
 import com.he181464.be_class.entity.Role;
 import com.he181464.be_class.mapper.AccountMapper;
 import com.he181464.be_class.repository.AccountRepository;
+
+import com.he181464.be_class.repository.ClassRoomStudentRepository;
 import com.he181464.be_class.repository.RoleRepository;
 import com.he181464.be_class.service.AdminService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +20,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
+
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +33,7 @@ public class AdminServiceImpl implements AdminService {
     private final AccountMapper accountMapper;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
-
+    private final ClassRoomStudentRepository classRoomStudentRepository;
 
     @Override
     public Page<AccountResponseDto> getAllTeacherAccount(int page, int size) {
@@ -46,7 +52,7 @@ public class AdminServiceImpl implements AdminService {
                 .orElseThrow(() -> new NoSuchElementException("khong tim thay role id" + accountDto.getRoleId()));
         account.setRole(role);
         account.setRoleId(accountDto.getRoleId());
-
+        account.setStatus(1);
         accountRepository.save(account);
         return accountMapper.toDTO(account);
     }
@@ -79,5 +85,26 @@ public class AdminServiceImpl implements AdminService {
 
         accountRepository.save(account);
         return accountMapper.toDTO(account);
+    }
+
+    @Override
+    public Page<AccountResponseDto> getAllStudents(int page, int size) {
+        Pageable pageable = PageRequest.of(page,size, Sort.by("id").ascending());
+
+        Page<Account> accountPage = accountRepository.findByRole(1, pageable);
+
+        List<Long> accountID = accountPage.stream().map(Account::getId).toList();
+        Map<Long, Long> classCountMap = new HashMap<>();
+
+        for (Long studentId : accountID) {
+            Long count = classRoomStudentRepository.countClassRoomStudentByStudentId(studentId);
+            classCountMap.put(studentId, count);
+        }
+        return accountPage.map(account -> {
+            AccountResponseDto dto = accountMapper.toDTO(account);
+            dto.setNumberClass(classCountMap.getOrDefault(account.getId(), 0L));
+            return dto;
+        });
+
     }
 }

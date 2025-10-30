@@ -22,4 +22,6 @@ public class AccountResponseDto {
     private String roleName;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    private Long numberClass;
 }

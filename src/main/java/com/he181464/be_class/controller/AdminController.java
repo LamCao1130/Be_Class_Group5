@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -26,23 +26,36 @@ public class AdminController {
     }
 
     @PostMapping("/create")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<AccountResponseDto> createAccount(@RequestBody AccountDto accountDto){
         AccountResponseDto createdAccount = adminService.createAccountByAdmin(accountDto);
         return ResponseEntity.ok(createdAccount);
     }
 
+
     @PatchMapping("/delete/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<AccountResponseDto> deleteAccount(@PathVariable("id") Long accountId){
         AccountResponseDto accountResponseDto = adminService.deleteAccount(accountId);
         return ResponseEntity.ok(accountResponseDto);
     }
 
     @PutMapping("/edit/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<AccountResponseDto> editAccount(@PathVariable("id") Long accountId, @RequestBody AccountDto accountDto){
         AccountResponseDto accountResponseDto = adminService.editAccount(accountId, accountDto);
         return ResponseEntity.ok(accountResponseDto);
     }
+
+
+    @GetMapping("/student")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Page<AccountResponseDto>> getAccountStudent(@RequestParam(defaultValue = "0") int page,
+                                                                         @RequestParam(defaultValue = "10") int size){
+        Page<AccountResponseDto> allStudentAccount = adminService.getAllStudents(page,size);
+        return ResponseEntity.ok(allStudentAccount);
+    }
+
+
+
 }
