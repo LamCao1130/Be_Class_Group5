@@ -21,4 +21,5 @@ public interface AccountService {
     boolean verifyCode(String secret, int code);
 
     AccountDto saveAccountSecretKey(Account account);
+    AccountDto updateAccount(AccountDto accountDto,long accountId);
 }
