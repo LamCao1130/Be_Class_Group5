@@ -46,6 +46,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/class-rooms-student/student/classroom").hasAuthority("STUDENT")
                         .requestMatchers("/api/profileStudent").hasAuthority("STUDENT")
                         .requestMatchers("api/profileStudent").hasAuthority("STUDENT")
+                        .requestMatchers("api/change-password").hasAuthority("STUDENT")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement((session) ->
