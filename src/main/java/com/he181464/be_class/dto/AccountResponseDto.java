@@ -1,15 +1,18 @@
 package com.he181464.be_class.dto;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class AccountResponseDto {
     private Long id;
     private String fullName;
@@ -22,4 +25,12 @@ public class AccountResponseDto {
     private String roleName;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    private List<Long> classRoomIds;
+
+    private List<ClassRoomResponseDto> classRooms;
+
+    private List<LessonDto> lessons;
+
+    private List<ExamDto> exams;
 }

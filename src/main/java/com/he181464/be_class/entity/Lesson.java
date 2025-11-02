@@ -19,8 +19,9 @@ public class Lesson {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "class_room_id", nullable = false)
-    private Long classRoomId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "class_room_id", nullable = false)
+    private ClassRoom classRoom;
 
     @Column(length = 255)
     private String title;
