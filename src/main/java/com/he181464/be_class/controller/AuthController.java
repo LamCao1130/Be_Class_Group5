@@ -1,6 +1,7 @@
 package com.he181464.be_class.controller;
 
 import com.he181464.be_class.dto.AccountDto;
+import com.he181464.be_class.dto.ChangePasswordDTO;
 import com.he181464.be_class.dto.LoginDto;
 import com.he181464.be_class.dto.Verify2FADto;
 import com.he181464.be_class.entity.Account;
@@ -174,5 +175,28 @@ public class AuthController {
         Account account=optionalAccount.get();
         AccountDto updatedAccountDto=accountService.updateAccount(accountDto,account.getId());
         return ResponseEntity.ok(updatedAccountDto);
+    }
+    //Đổ mật khẩu
+    @PutMapping("/change-password")
+    public ResponseEntity<?> changePassword(Authentication authentication, @RequestBody ChangePasswordDTO changePasswordDTO) {
+        if(authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        if(!changePasswordDTO.getNewPassword().equals(changePasswordDTO.getConfirmPassword())) {
+            return ResponseEntity.badRequest().body("Mật Khẩu Không Khớp");
+        }
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String email = userDetails.getUsername();
+        Optional<Account> optionalAccount=accountRepository.findByEmail(email);
+        if(optionalAccount.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        Account account=optionalAccount.get();
+        if(!accountService.passwordMatches(changePasswordDTO.getCurrentPassword(),account.getPassword())){
+            return ResponseEntity.badRequest().body("Mật Khẩu Hiện Tại Không Đúng");
+        }
+        accountService.changePassword(account,changePasswordDTO.getNewPassword());
+        return ResponseEntity.ok().build();
     }
 }

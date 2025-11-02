@@ -128,4 +128,15 @@ public class AccountServiceImpl implements AccountService {
                 .build();
     }
 
+    @Override
+    public boolean passwordMatches(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(Account account, String newPassword) {
+    account.setPassword(passwordEncoder.encode(newPassword));
+    accountRepository.save(account);
+    }
 }
