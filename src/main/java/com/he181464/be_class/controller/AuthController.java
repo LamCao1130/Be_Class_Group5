@@ -1,5 +1,6 @@
 package com.he181464.be_class.controller;
 
+import com.he181464.be_class.constant.AppConstant;
 import com.he181464.be_class.dto.AccountDto;
 import com.he181464.be_class.dto.LoginDto;
 import com.he181464.be_class.dto.Verify2FADto;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -56,6 +58,9 @@ public class AuthController {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
             Account account = accountService.getAccountByEmailToGenerate2Fa(authRequest.getEmail());
+            if(account.getStatus() == 0){
+                throw new DisabledException("Your account is disable");
+            }
             if (account.getSecretCode() == null || account.getSecretCode().isEmpty()) {
                 // 2FA not enabled, proceed with normal login
                 String issuer = "CAOLAM_API";

@@ -14,4 +14,8 @@ public interface AdminService {
     AccountResponseDto deleteAccount(Long accountId);
 
     AccountResponseDto editAccount(Long accountId, AccountDto accountDto);
+
+    AccountResponseDto restoreAccount(Long accountId);
+
+    AccountResponseDto getTeacherAccountAndClassesById(Long accountId);
 }

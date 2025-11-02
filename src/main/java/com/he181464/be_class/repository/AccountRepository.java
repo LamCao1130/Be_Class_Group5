@@ -16,11 +16,17 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Optional<Account> findByEmail(String email);
 
-    List<Account> findAllByStatusTrue();
-
     Optional<Account> findById(Long accountId);
 
 
     @Query("select a from Account a where a.role.id = :roleId")
     Page<Account> findByRole(@Param("roleId") Integer roleId, Pageable pageable);
+
+    boolean existsAccountByEmail(String email);
+
+    boolean existsAccountByPhoneNumber(String phoneNumber);
+
+    boolean existsAccountByEmailAndIdIsNot(String email,Long accountId);
+
+    boolean existsAccountByPhoneNumberAndIdIsNot(String phoneNumber,Long accountId);
 }
