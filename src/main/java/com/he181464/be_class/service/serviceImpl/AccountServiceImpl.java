@@ -5,17 +5,21 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.he181464.be_class.constant.AppConstant;
 import com.he181464.be_class.dto.AccountDto;
 import com.he181464.be_class.dto.AccountResponseDto;
 import com.he181464.be_class.entity.Account;
+import com.he181464.be_class.entity.Role;
 import com.he181464.be_class.exception.ObjectExistingException;
 import com.he181464.be_class.mapper.AccountMapper;
 import com.he181464.be_class.model.response.TwoFAData;
 import com.he181464.be_class.repository.AccountRepository;
+import com.he181464.be_class.repository.RoleRepository;
 import com.he181464.be_class.service.AccountService;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +29,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Base64;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -34,9 +39,7 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
     private final PasswordEncoder passwordEncoder;
-
-
-
+    private final RoleRepository roleRepository;
     @Override
     @Transactional
     public boolean createAccount(AccountDto accountDto) {
@@ -110,4 +113,6 @@ public class AccountServiceImpl implements AccountService {
     public List<AccountResponseDto> getAllAccount() {
         return accountRepository.findAll().stream().map(accountMapper::toDTO).toList();
     }
+
+
 }

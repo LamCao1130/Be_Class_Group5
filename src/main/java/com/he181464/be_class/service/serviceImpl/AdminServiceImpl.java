@@ -1,5 +1,6 @@
 package com.he181464.be_class.service.serviceImpl;
 
+import com.he181464.be_class.constant.AppConstant;
 import com.he181464.be_class.dto.AccountDto;
 import com.he181464.be_class.dto.AccountResponseDto;
 import com.he181464.be_class.entity.Account;
@@ -11,6 +12,7 @@ import com.he181464.be_class.repository.ClassRoomStudentRepository;
 import com.he181464.be_class.repository.RoleRepository;
 import com.he181464.be_class.service.AdminService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -44,15 +46,22 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public AccountResponseDto createAccountByAdmin(AccountDto accountDto) {
+        if(accountRepository.existsAccountByEmail(accountDto.getEmail())){
+            throw new DuplicateKeyException("Email already exist");
+        }
+        if(accountRepository.existsAccountByPhoneNumber(accountDto.getPhoneNumber())){
+            throw new DuplicateKeyException("Phone number already exist");
+        }
         Account account = accountMapper.toEntity(accountDto);
-        account.setPassword(passwordEncoder.encode(accountDto.getPassword()));
+        account.setPassword(passwordEncoder.encode(accountDto.getFullName() + "123"));
         account.setCreatedAt(LocalDateTime.now());
         account.setUpdatedAt(null);
         Role role = roleRepository.findById(accountDto.getRoleId())
                 .orElseThrow(() -> new NoSuchElementException("khong tim thay role id" + accountDto.getRoleId()));
         account.setRole(role);
         account.setRoleId(accountDto.getRoleId());
-        account.setStatus(1);
+        account.setStatus(Integer.parseInt(AppConstant.STATUS_ACTIVE));
+
         accountRepository.save(account);
         return accountMapper.toDTO(account);
     }
