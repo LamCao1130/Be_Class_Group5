@@ -1,10 +1,14 @@
 package com.he181464.be_class.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 @Slf4j
@@ -24,4 +28,15 @@ public class GlobalExceptionHandling {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
+    @ExceptionHandler(DuplicateKeyException.class)
+    public ResponseEntity<Map<String,String>> handleDuplicateException(DuplicateKeyException e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("message",e.getMessage()));
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<Map<String,String>> handleNoSuchElement(NoSuchElementException e){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("message",e.getMessage()));
+    }
 }
