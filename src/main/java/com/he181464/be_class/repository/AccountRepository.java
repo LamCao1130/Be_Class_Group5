@@ -1,6 +1,7 @@
 package com.he181464.be_class.repository;
 
 import com.he181464.be_class.entity.Account;
+import com.he181464.be_class.entity.ClassRoomStudent;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

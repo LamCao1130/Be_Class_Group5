@@ -2,12 +2,14 @@ package com.he181464.be_class.controller;
 
 import com.he181464.be_class.constant.AppConstant;
 import com.he181464.be_class.dto.AccountDto;
+import com.he181464.be_class.dto.ChangePasswordDTO;
 import com.he181464.be_class.dto.LoginDto;
 import com.he181464.be_class.dto.Verify2FADto;
 import com.he181464.be_class.entity.Account;
 import com.he181464.be_class.jwt.JwtService;
 import com.he181464.be_class.model.response.AuthResponse;
 import com.he181464.be_class.model.response.TwoFAData;
+import com.he181464.be_class.repository.AccountRepository;
 import com.he181464.be_class.service.AccountService;
 import com.he181464.be_class.service.TokenService;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +24,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 import java.util.stream.Collectors;
 
@@ -44,6 +45,7 @@ public class AuthController {
     private final JwtService jwtService;
 
     private final TokenService tokenService;
+    private final AccountRepository accountRepository;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody AccountDto registerRequest) {
@@ -141,5 +143,69 @@ public class AuthController {
 
     }
 
+// Profile account student
+    @GetMapping("/profileStudent")
+    public ResponseEntity<AccountDto> getProfileStudent(Authentication authentication) {
+        if(authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).build();
+        }
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String email = userDetails.getUsername();
+        Optional<Account> optionalAccount=accountRepository.findByEmail(email);
+        if(optionalAccount.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        Account account=optionalAccount.get();
+        AccountDto dto=new AccountDto(
+                account.getEmail(),
+                account.getFullName(),
+                account.getPassword(),
+                account.getRoleId(),
+                account.getPhoneNumber(),
+                account.getAddress(),
+                account.getDateOfBirth(),
+                account.getStatus()
+        );
+        return ResponseEntity.ok(dto);
+    }
 
+    //cập nhật Profile
+    @PutMapping("/profileStudent")
+    public ResponseEntity<AccountDto> updateProfileStudent(Authentication authentication, @RequestBody AccountDto accountDto) {
+        if(authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).build();
+        }
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String email = userDetails.getUsername();
+        Optional<Account> optionalAccount=accountRepository.findByEmail(email);
+        if(optionalAccount.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        Account account=optionalAccount.get();
+        AccountDto updatedAccountDto=accountService.updateAccount(accountDto,account.getId());
+        return ResponseEntity.ok(updatedAccountDto);
+    }
+    //Đổ mật khẩu
+    @PutMapping("/change-password")
+    public ResponseEntity<?> changePassword(Authentication authentication, @RequestBody ChangePasswordDTO changePasswordDTO) {
+        if(authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        if(!changePasswordDTO.getNewPassword().equals(changePasswordDTO.getConfirmPassword())) {
+            return ResponseEntity.badRequest().body("Mật Khẩu Không Khớp");
+        }
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String email = userDetails.getUsername();
+        Optional<Account> optionalAccount=accountRepository.findByEmail(email);
+        if(optionalAccount.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        Account account=optionalAccount.get();
+        if(!accountService.passwordMatches(changePasswordDTO.getCurrentPassword(),account.getPassword())){
+            return ResponseEntity.badRequest().body("Mật Khẩu Hiện Tại Không Đúng");
+        }
+        accountService.changePassword(account,changePasswordDTO.getNewPassword());
+        return ResponseEntity.ok().build();
+    }
 }
