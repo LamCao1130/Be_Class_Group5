@@ -8,13 +8,12 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 import java.util.List;
 
-@Entity
 @Data
+@Entity
+@Table(name = "exams")
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "exams")
 public class Exam {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -57,5 +56,9 @@ public class Exam {
     @JoinColumn(name = "class_room_id")
     private ClassRoom classRoom;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "exam")
+    private List<ExamAttempts> examAttempts;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "exam")
+    private List<QuestionType> questionTypes;
 }

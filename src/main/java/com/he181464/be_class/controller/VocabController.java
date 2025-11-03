@@ -7,33 +7,32 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @Controller
-@RequestMapping("/api/v1/public/vocab")
+@RequestMapping("/api/v1/public/vocab/")
 @RequiredArgsConstructor
 
 public class VocabController {
     private final VocabService vocabService;
 
     @PostMapping("create")
-    public ResponseEntity<?> createVocab(@Valid @RequestBody List<VocabularyDto> vocabularyCreateDto){
-        vocabularyCreateDto.stream().forEach(voc->voc.setId(null));
+    public ResponseEntity<?> createVocab(@Valid @RequestBody List<VocabularyDto> vocabularyCreateDto) {
+        vocabularyCreateDto.stream().forEach(voc -> voc.setId(null));
         return ResponseEntity.ok(vocabService.createListVocabulary(vocabularyCreateDto));
     }
 
-    @GetMapping("/lesson/{id}")
+    @GetMapping("lesson/{id}")
     public ResponseEntity<?> getVocabById(@PathVariable("id") Long lessonId) {
         List<VocabularyDto> vocabularies = vocabService.getVocabulariesByLesson(lessonId);
         return ResponseEntity.ok(vocabularies);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteVocab(@PathVariable("id") Long vocabId){
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<?> deleteVocab(@PathVariable("id") Long vocabId) {
         vocabService.deleteVocabulary(vocabId);
         return ResponseEntity.ok().build();
     }
@@ -43,5 +42,10 @@ public class VocabController {
                                          @RequestParam("lessonId") Long lessonId) {
         vocabService.importVocabFromExcelFile(file, lessonId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PutMapping("update")
+    public ResponseEntity<?> updateVocab(@RequestBody VocabularyDto vocabularyDto) {
+        return ResponseEntity.ok(vocabService.editVocab(vocabularyDto));
     }
 }
