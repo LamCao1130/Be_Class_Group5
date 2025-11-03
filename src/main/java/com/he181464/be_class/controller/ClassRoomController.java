@@ -1,9 +1,13 @@
 package com.he181464.be_class.controller;
 
 import com.he181464.be_class.dto.ClassRoomDto;
+import com.he181464.be_class.dto.ClassRoomStudentDTO;
 import com.he181464.be_class.service.ClassRoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -35,5 +39,4 @@ public class ClassRoomController {
     public ResponseEntity<?> getClassRoomById(@PathVariable Long id) {
         return ResponseEntity.ok(classRoomService.getClassRoomById(id));
     }
-
 }
