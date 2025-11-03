@@ -1,15 +1,16 @@
 package com.he181464.be_class.service.serviceImpl;
 
 import com.he181464.be_class.constant.AppConstant;
-import com.he181464.be_class.dto.AccountDto;
-import com.he181464.be_class.dto.AccountResponseDto;
-import com.he181464.be_class.dto.ClassRoomResponseDto;
+import com.he181464.be_class.dto.*;
 import com.he181464.be_class.entity.*;
 import com.he181464.be_class.mapper.AccountMapper;
 import com.he181464.be_class.mapper.ClassRoomMapper;
+import com.he181464.be_class.mapper.ExamMapper;
+import com.he181464.be_class.mapper.LessonMapper;
 import com.he181464.be_class.repository.*;
 import com.he181464.be_class.service.AdminService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
@@ -36,6 +39,10 @@ public class AdminServiceImpl implements AdminService {
     private final TokenRepository tokenRepository;
     private final ClassRoomMapper classRoomMapper;
     private final ClassRoomStudentRepository classRoomStudentRepository;
+    private final LessonRepository lessonRepository;
+    private final LessonMapper lessonMapper;
+    private final ExamRepository examRepository;
+    private final ExamMapper examMapper;
 
 
     @Override
@@ -123,7 +130,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public AccountResponseDto getTeacherAccountAndClassesById(Long accountId) {
+    public AccountResponseDto getTeacherAccountAndClassesAndLessonAndExamById(Long accountId) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new NoSuchElementException("Not found account id"+accountId));
         List<ClassRoom> classRoom = classRoomRepository.findByTeacherIdAndStatus(accountId,AppConstant.STATUS_ACTIVE);
@@ -134,14 +141,22 @@ public class AdminServiceImpl implements AdminService {
                 array -> (Long) array[0],
                 array -> ((Long) array[1]).intValue()
         ));
+        List<LessonDto> lessonDtos = lessonRepository.findAllByTeacherId(accountId).stream().map(lessonMapper::toLessonDto).toList();
+        Map<Long,List<LessonDto>> lessonByClass = lessonDtos.stream().collect(Collectors.groupingBy(LessonDto::getClassRoomId));
+
+        List<ExamDto> examDtos = examRepository.findAllByTeacherId(accountId).stream().map(examMapper::toDTO).toList();
+        Map<Long, List<ExamDto>> examByClass = examDtos.stream()
+                .filter(exam -> exam.getClassRoomId() != null)
+                .collect(Collectors.groupingBy(ExamDto::getClassRoomId));
+
 
         List<ClassRoomResponseDto> classRoomResponseDtos = classRoom.stream().map(
                 clr -> {
                     ClassRoomResponseDto dto = classRoomMapper.toDTO(clr);
-
                     Integer studentCounts = studentCountMap.getOrDefault(clr.getId(),0);
-
                     dto.setStudentCount(studentCounts);
+                    dto.setLessons(lessonByClass.getOrDefault(clr.getId(),new ArrayList<>()));
+                    dto.setExams(examByClass.getOrDefault(clr.getId(),new ArrayList<>()));
                     return dto;
                 }
         ).toList();

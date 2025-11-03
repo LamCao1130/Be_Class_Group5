@@ -30,7 +30,4 @@ public class AccountResponseDto {
 
     private List<ClassRoomResponseDto> classRooms;
 
-    private List<LessonDto> lessons;
-
-    private List<ExamDto> exams;
 }

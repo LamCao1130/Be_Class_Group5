@@ -56,7 +56,7 @@ public class AdminController {
     @GetMapping("/teacher/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<AccountResponseDto> getTeacherAccountByAdmin(@PathVariable("id") Long accountId){
-        AccountResponseDto accountResponseDto = adminService.getTeacherAccountAndClassesById(accountId);
+        AccountResponseDto accountResponseDto = adminService.getTeacherAccountAndClassesAndLessonAndExamById(accountId);
         return ResponseEntity.ok(accountResponseDto);
     }
 }

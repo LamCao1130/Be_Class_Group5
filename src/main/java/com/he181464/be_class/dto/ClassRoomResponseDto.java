@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Builder
 @Data
@@ -33,4 +34,8 @@ public class ClassRoomResponseDto {
     private LocalDateTime createdDate;
 
     private Integer studentCount;
+
+    private List<LessonDto> lessons;
+
+    private List<ExamDto> exams;
 }

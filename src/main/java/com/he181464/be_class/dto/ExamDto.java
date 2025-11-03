@@ -5,27 +5,27 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class ExamDto {
-    private Long id;
-    private Long classRoomId;
+    private Integer id;
     private String title;
     private String examType;
     private String description;
     private Integer durationMinutes;
     private Integer totalMarks;
     private Integer passingScore;
-    private LocalDateTime examDate;
     private Integer switchTabs;
     private Integer status;
-    private LocalDateTime createdAt;
+    private Date createdAt;
+    private Date examDate;
 
-    private Integer createdBy;
+    private Long createdBy;
     private String creatorName;
-
+    private Long classRoomId;
+    private String classRoomName;
 }

@@ -17,5 +17,5 @@ public interface AdminService {
 
     AccountResponseDto restoreAccount(Long accountId);
 
-    AccountResponseDto getTeacherAccountAndClassesById(Long accountId);
+    AccountResponseDto getTeacherAccountAndClassesAndLessonAndExamById(Long accountId);
 }
