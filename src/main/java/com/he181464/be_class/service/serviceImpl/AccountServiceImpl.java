@@ -43,7 +43,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     public boolean createAccount(AccountDto accountDto) {
-        if(accountRepository.findByEmail(accountDto.getEmail()).isPresent()) {
+        if (accountRepository.findByEmail(accountDto.getEmail()).isPresent()) {
             throw new ObjectExistingException("Email already exists");
         }
         Account account = new Account();
