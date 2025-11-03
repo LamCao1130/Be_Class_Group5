@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -17,60 +17,45 @@ public class Exam {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
-    @Column(name = "class_room_id", nullable = false)
-    private Long classRoomId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "class_room_id", insertable = false, updatable = false)
-    private ClassRoom classRoom;
-
-    @Column(name = "title", length = 255, nullable = false)
+    @Column(name = "title", columnDefinition = "varchar(255)")
     private String title;
 
-    @Column(name = "exam_type", length = 20, nullable = false)
+    @Column(name = "exam_type", columnDefinition = "varchar(20)")
     private String examType;
 
-    @Column(name = "description", columnDefinition = "TEXT")
+    @Column(name = "description", columnDefinition = "text")
     private String description;
 
-    @Column(name = "duration_minutes", nullable = false)
-    private Integer durationMinutes;
+    @Column(name = "duration_minutes")
+    private int durationMinutes;
 
-    @Column(name = "total_marks", nullable = false)
-    private Integer totalMarks;
+    @Column(name = "total_marks")
+    private int totalMarks;
 
-    @Column(name = "passing_score", nullable = false)
-    private Integer passingScore;
+    @Column(name = "passing_score")
+    private int passingScore;
 
-    @Column(name = "exam_date")
-    private LocalDateTime examDate;
-
-    @Column(name = "Switch_tabs")
+    @Column(name = "switch_tabs")
     private Integer switchTabs;
 
-    @Column(name = "status")
-    private Integer status;
+    @Column(name = "status", columnDefinition = "tinyint")
+    private int status;
 
-    @Column(name = "created_by", nullable = false)
-    private Integer createdBy;
+    @Column(name = "created_at", columnDefinition = "datetime")
+    private Date createdAt;
+
+    @Column(name = "exam_date", columnDefinition = "datetime")
+    private Date examDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by", insertable = false, updatable = false)
-    private Account creator;
+    @JoinColumn(name = "created_by")
+    private Account account;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "class_room_id")
+    private ClassRoom classRoom;
 
 
-    @PrePersist
-    public void prePersist() {
-        if (createdAt == null) {
-            createdAt = LocalDateTime.now();
-        }
-        if (status == null) {
-            status = 1;
-        }
-    }
 }

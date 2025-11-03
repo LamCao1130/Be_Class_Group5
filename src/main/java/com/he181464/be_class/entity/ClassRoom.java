@@ -45,8 +45,9 @@ public class ClassRoom {
     @JoinColumn(name = "teacher_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Account teacher;
 
-    @OneToMany(mappedBy = "classRoom", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Lesson> lessons;
+    @OneToMany(mappedBy = "classRoom")
+    private List<Exam> exams;
+
 
     @PrePersist
     public void prePersist() {
