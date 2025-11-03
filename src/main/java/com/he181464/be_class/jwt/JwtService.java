@@ -2,6 +2,7 @@ package com.he181464.be_class.jwt;
 
 import com.he181464.be_class.entity.Account;
 import com.he181464.be_class.repository.AccountRepository;
+import com.he181464.be_class.repository.TokenRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -25,6 +26,8 @@ public class JwtService {
     private String jwtSecret;
 
     private final AccountRepository accountRepository;
+
+    private final TokenRepository tokenRepository;
 
     public String generateAccessToken(UserDetails userDetails) {
 
@@ -61,7 +64,8 @@ public class JwtService {
         String username = extractUsername(token);
 
         boolean isExpire = Jwts.parser().setSigningKey(jwtSecret.getBytes(StandardCharsets.UTF_8)).parseClaimsJws(token).getBody().getExpiration().before(new Date());
-        return (username.equals(userDetails.getUsername()) && !isExpire);
+
+        return username.equals(userDetails.getUsername()) && !isExpire;
     }
 
 }
