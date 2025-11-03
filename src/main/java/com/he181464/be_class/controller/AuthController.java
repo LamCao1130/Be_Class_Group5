@@ -12,11 +12,13 @@ import com.he181464.be_class.repository.AccountRepository;
 import com.he181464.be_class.service.AccountService;
 import com.he181464.be_class.service.TokenService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,6 +26,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+import java.util.stream.Collectors;
+
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -82,7 +87,7 @@ public class AuthController {
                 account.setSecretCode(verify2FADto.getBase32Code());
                 Integer code = Integer.parseInt(verify2FADto.getSecretCode());
 
-                if(accountService.verifyCode(verify2FADto.getBase32Code(), code)){
+                if (accountService.verifyCode(verify2FADto.getBase32Code(), code)) {
                     account.setSecretCode(verify2FADto.getBase32Code());
                     accountService.saveAccountSecretKey(account);
                     UserDetails userDetails = userDetailsService.loadUserByUsername(account.getEmail());
@@ -99,8 +104,7 @@ public class AuthController {
                                     .accessToken(accessToken)
                                     .refreshToken(refreshToken)
                                     .build());
-                }
-                else{
+                } else {
                     return ResponseEntity.badRequest().body("Invalid 2FA code during setup");
                 }
 

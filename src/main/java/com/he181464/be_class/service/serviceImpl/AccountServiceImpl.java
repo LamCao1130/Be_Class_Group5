@@ -5,8 +5,8 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
-import com.he181464.be_class.constant.AppConstant;
 import com.he181464.be_class.dto.AccountDto;
+import com.he181464.be_class.dto.AccountResponseDto;
 import com.he181464.be_class.entity.Account;
 import com.he181464.be_class.exception.ObjectExistingException;
 import com.he181464.be_class.mapper.AccountMapper;
@@ -22,8 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Base64;
 
 @Service
@@ -32,15 +32,15 @@ import java.util.Base64;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
-
+    private final AccountMapper accountMapper;
     private final PasswordEncoder passwordEncoder;
 
-    private final AccountMapper accountMapper;
+
 
     @Override
     @Transactional
     public boolean createAccount(AccountDto accountDto) {
-        if(accountRepository.findByEmail(accountDto.getEmail()).isPresent()) {
+        if (accountRepository.findByEmail(accountDto.getEmail()).isPresent()) {
             throw new ObjectExistingException("Email already exists");
         }
         Account account = new Account();
@@ -138,5 +138,10 @@ public class AccountServiceImpl implements AccountService {
     public void changePassword(Account account, String newPassword) {
     account.setPassword(passwordEncoder.encode(newPassword));
     accountRepository.save(account);
+    }
+
+    @Override
+    public List<AccountResponseDto> getAllAccount() {
+        return accountRepository.findAll().stream().map(accountMapper::toDTO).toList();
     }
 }
