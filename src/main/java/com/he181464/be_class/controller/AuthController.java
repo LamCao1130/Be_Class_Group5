@@ -64,7 +64,7 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
             Account account = accountService.getAccountByEmailToGenerate2Fa(authRequest.getEmail());
             if(account.getStatus() == 0){
-                throw new DisabledException("Your account is disable");
+                return ResponseEntity.status(403).body("Your account is disable");
             }
             if (account.getSecretCode() == null || account.getSecretCode().isEmpty()) {
                 // 2FA not enabled, proceed with normal login

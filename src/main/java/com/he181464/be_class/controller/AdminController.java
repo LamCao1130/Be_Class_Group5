@@ -2,6 +2,7 @@ package com.he181464.be_class.controller;
 
 import com.he181464.be_class.dto.AccountDto;
 import com.he181464.be_class.dto.AccountResponseDto;
+import com.he181464.be_class.dto.ClassRoomResponseDto;
 import com.he181464.be_class.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -58,5 +59,11 @@ public class AdminController {
     public ResponseEntity<AccountResponseDto> getTeacherAccountByAdmin(@PathVariable("id") Long accountId){
         AccountResponseDto accountResponseDto = adminService.getTeacherAccountAndClassesAndLessonAndExamById(accountId);
         return ResponseEntity.ok(accountResponseDto);
+    }
+
+    @GetMapping("/classroom")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<ClassRoomResponseDto> getAllClassRoom(){
+        return null;
     }
 }

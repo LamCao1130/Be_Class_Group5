@@ -2,6 +2,7 @@ package com.he181464.be_class.service;
 
 import com.he181464.be_class.dto.AccountDto;
 import com.he181464.be_class.dto.AccountResponseDto;
+import com.he181464.be_class.dto.ClassRoomResponseDto;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -18,4 +19,6 @@ public interface AdminService {
     AccountResponseDto restoreAccount(Long accountId);
 
     AccountResponseDto getTeacherAccountAndClassesAndLessonAndExamById(Long accountId);
+
+    ClassRoomResponseDto getAllClassRoom();
 }

@@ -166,7 +166,6 @@ public class AdminServiceImpl implements AdminService {
         return accountResponseDto;
     }
 
-
     @Override
     public AccountResponseDto editAccount(Long accountId, AccountDto accountDto) {
         Account account = accountRepository.findById(accountId)
@@ -188,6 +187,13 @@ public class AdminServiceImpl implements AdminService {
 
         accountRepository.save(account);
         return accountMapper.toDTO(account);
+    }
+
+
+    @Override
+    public ClassRoomResponseDto getAllClassRoom() {
+
+        return null;
     }
 
 }
