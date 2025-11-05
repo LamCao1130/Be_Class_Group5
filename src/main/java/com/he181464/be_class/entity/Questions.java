@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -36,14 +37,13 @@ public class Questions {
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lesson_id")
-    private Lesson lesson;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reading_passage_id")
     private ReadingPassage readingPassage;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_type_id")
     private QuestionType questionType;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "questions", cascade = CascadeType.ALL)
+    private List<QuestionOption> questionOptions;
 }
