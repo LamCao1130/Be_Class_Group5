@@ -14,5 +14,5 @@ public class QuestionOptionDto {
 
     private Integer questionId;
 
-    private Boolean isCorrect;
+    private Boolean correctAnswer;
 }

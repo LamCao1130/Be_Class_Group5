@@ -19,8 +19,8 @@ public class QuestionOption {
     @Column(name = "option_text",columnDefinition = "text")
     private String optionText;
 
-    @Column(name = "is_correct")
-    private Boolean isCorrect;
+    @Column(name = "correct_answer")
+    private Boolean correctAnswer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
