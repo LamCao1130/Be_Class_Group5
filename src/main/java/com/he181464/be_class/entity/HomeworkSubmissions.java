@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -17,32 +19,32 @@ public class HomeworkSubmissions {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "submission_context", columnDefinition = "text")
+    @Column(name = "submission_content", columnDefinition = "text")
     private String submissionContext;
 
     @Column(name = "attachment_url", columnDefinition = "varchar(500)")
     private String attachmentUrl;
 
     @Column(name = "submitted_at", columnDefinition = "datetime")
-    private Date submittedAt;
+    private LocalDateTime submittedAt;
 
     @Column(name = "status", columnDefinition = "varchar(20)")
     private String status;
 
     @Column(name = "score", columnDefinition = "decimal(5,2)")
-    private Long score;
+    private BigDecimal score;
 
     @Column(name = "teacher_feedback", columnDefinition = "text")
     private String teacherFeedback;
 
-    @Column(name = "grader_by")
-    private int gradedBy;
+    @Column(name = "graded_by")
+    private Integer  gradedBy;
 
     @Column(name = "graded_at")
-    private Date gradedAt;
+    private LocalDateTime gradedAt;
 
     @Column(name = "started_at")
-    private Date startedAt;
+    private LocalDateTime startedAt;
 
     @Column(name = "time_spent")
     private int timeSpent;
@@ -51,10 +53,10 @@ public class HomeworkSubmissions {
     private int attemptCount;
 
     @Column(name = "created_at")
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id")

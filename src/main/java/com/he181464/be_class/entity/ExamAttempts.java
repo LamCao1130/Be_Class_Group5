@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -27,7 +28,7 @@ public class ExamAttempts {
     private Account student;
 
     @Column(name = "score", precision = 5, scale = 2)
-    private int score;
+    private BigDecimal score;
 
     @Column(name = "time_spent")
     private Integer timeSpent;

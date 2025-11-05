@@ -20,6 +20,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Optional<Account> findById(Long accountId);
 
+    Account findAccountsById(Long accountId);
 
     @Query("select a from Account a where a.role.id = :roleId")
     Page<Account> findByRole(@Param("roleId") Integer roleId, Pageable pageable);
@@ -27,4 +28,17 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     boolean existsAccountByEmail(String email);
 
     boolean existsAccountByPhoneNumber(String phoneNumber);
+
+    @Query("select count(a) from Account a where a.role.name ='Student' and a.status = 1")
+    Integer countActiveStudent();
+
+    @Query("select count(a) from Account a where a.role.name ='Teacher' and a.status = 1")
+    Integer countActiveTeacher();
+
+    @Query("SELECT month(e.createdAt) as month, count(e) as total" +
+            " from Account e " +
+            "where year(e.createdAt) = :year " +
+            "group by month(e.createdAt) " +
+            "order by month(e.createdAt)")
+    List<Object[]> getStudentByYear(@Param("year") int year);
 }
