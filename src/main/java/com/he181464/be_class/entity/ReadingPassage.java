@@ -34,6 +34,6 @@ public class ReadingPassage {
     @JoinColumn(name = "lesson_id", unique = true)
     private Lesson lesson;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "readingPassage")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "readingPassage", cascade = CascadeType.ALL)
     private List<Questions> questions;
 }
