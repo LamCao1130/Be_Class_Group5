@@ -1,5 +1,7 @@
 package com.he181464.be_class.jwt;
 
+import com.he181464.be_class.entity.Account;
+import com.he181464.be_class.repository.AccountRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +25,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final AccountRepository accountRepository;
 
 
     @Override
@@ -44,6 +47,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            Account account = accountRepository.findByEmail(username).orElse(null);
+            if(account != null && account.getStatus() == 0){
+                log.warn("Access by disable account {}",username);
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                response.getWriter().write("Access denied. Your account has been disable");
+                return;
+            }
 
             if (jwtService.isValidToken(token, userDetails)) {
 

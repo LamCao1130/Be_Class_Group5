@@ -6,6 +6,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.he181464.be_class.dto.AccountDto;
+import com.he181464.be_class.dto.AccountResponseDto;
 import com.he181464.be_class.entity.Account;
 import com.he181464.be_class.exception.ObjectExistingException;
 import com.he181464.be_class.mapper.AccountMapper;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Base64;
 
 @Service
@@ -30,10 +32,10 @@ import java.util.Base64;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
-
+    private final AccountMapper accountMapper;
     private final PasswordEncoder passwordEncoder;
 
-    private final AccountMapper accountMapper;
+
 
     @Override
     @Transactional
@@ -103,4 +105,43 @@ public class AccountServiceImpl implements AccountService {
         return accountMapper.toAccountDto(accountRepository.save(account));
     }
 
+    @Override
+    @Transactional
+    public AccountDto updateAccount(AccountDto accountDto, long accountId) {
+        Account account=accountRepository.findById(accountId).orElseThrow(() -> new IllegalArgumentException("Account not found"));
+        account.setFullName(accountDto.getFullName());
+        account.setEmail(accountDto.getEmail());
+        account.setPhoneNumber(accountDto.getPhoneNumber());
+        account.setAddress(accountDto.getAddress());
+        account.setDateOfBirth(accountDto.getDateOfBirth());
+        account.setPassword(passwordEncoder.encode(accountDto.getPassword()));
+        Account updatedAccount = accountRepository.save(account);
+        return AccountDto.builder()
+                .email(updatedAccount.getEmail())
+                .fullName(updatedAccount.getFullName())
+                .password(updatedAccount.getPassword())
+                .roleId(updatedAccount.getRoleId())
+                .phoneNumber(updatedAccount.getPhoneNumber())
+                .address(updatedAccount.getAddress())
+                .dateOfBirth(updatedAccount.getDateOfBirth())
+                .status(updatedAccount.getStatus())
+                .build();
+    }
+
+    @Override
+    public boolean passwordMatches(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(Account account, String newPassword) {
+    account.setPassword(passwordEncoder.encode(newPassword));
+    accountRepository.save(account);
+    }
+
+    @Override
+    public List<AccountResponseDto> getAllAccount() {
+        return accountRepository.findAll().stream().map(accountMapper::toDTO).toList();
+    }
 }
