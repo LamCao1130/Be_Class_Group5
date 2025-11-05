@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,6 +18,8 @@ public class QuestionType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name = "type")
+    private String type;
     @Column(name = "name")
     private String name;
 
@@ -24,8 +28,9 @@ public class QuestionType {
     private Lesson lesson;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "exams_id")
+    @JoinColumn(name = "exams_id", nullable = true)
     private Exam exam;
 
-
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "questionType", cascade = CascadeType.ALL)
+    private List<Questions> questions;
 }
