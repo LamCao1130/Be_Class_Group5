@@ -29,4 +29,8 @@ public interface AdminService {
     DashboardDTO getDashboard();
 
     List<LineChartDTO> getLineChart(int year);
+
+    AccountResponseDto restoreAccount(Long accountId);
+
+    AccountResponseDto getTeacherAccountAndClassesAndLessonAndExamById(Long accountId);
 }

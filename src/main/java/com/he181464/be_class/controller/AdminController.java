@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin")
@@ -103,5 +102,19 @@ public class AdminController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> lineChart(@RequestParam("year")int year){
         return ResponseEntity.ok(adminService.getLineChart(year));
+    }
+
+    @PatchMapping("/restore/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<AccountResponseDto> restoreAccount(@PathVariable("id") Long accountId){
+        AccountResponseDto accountResponseDto = adminService.restoreAccount(accountId);
+        return ResponseEntity.ok(accountResponseDto);
+    }
+
+    @GetMapping("/teacher/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<AccountResponseDto> getTeacherAccountByAdmin(@PathVariable("id") Long accountId){
+        AccountResponseDto accountResponseDto = adminService.getTeacherAccountAndClassesAndLessonAndExamById(accountId);
+        return ResponseEntity.ok(accountResponseDto);
     }
 }

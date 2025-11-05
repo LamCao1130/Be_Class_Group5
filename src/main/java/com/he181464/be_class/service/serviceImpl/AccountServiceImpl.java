@@ -108,6 +108,40 @@ public class AccountServiceImpl implements AccountService {
         return accountMapper.toAccountDto(accountRepository.save(account));
     }
 
+    @Override
+    @Transactional
+    public AccountDto updateAccount(AccountDto accountDto, long accountId) {
+        Account account=accountRepository.findById(accountId).orElseThrow(() -> new IllegalArgumentException("Account not found"));
+        account.setFullName(accountDto.getFullName());
+        account.setEmail(accountDto.getEmail());
+        account.setPhoneNumber(accountDto.getPhoneNumber());
+        account.setAddress(accountDto.getAddress());
+        account.setDateOfBirth(accountDto.getDateOfBirth());
+        account.setPassword(passwordEncoder.encode(accountDto.getPassword()));
+        Account updatedAccount = accountRepository.save(account);
+        return AccountDto.builder()
+                .email(updatedAccount.getEmail())
+                .fullName(updatedAccount.getFullName())
+                .password(updatedAccount.getPassword())
+                .roleId(updatedAccount.getRoleId())
+                .phoneNumber(updatedAccount.getPhoneNumber())
+                .address(updatedAccount.getAddress())
+                .dateOfBirth(updatedAccount.getDateOfBirth())
+                .status(updatedAccount.getStatus())
+                .build();
+    }
+
+    @Override
+    public boolean passwordMatches(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(Account account, String newPassword) {
+    account.setPassword(passwordEncoder.encode(newPassword));
+    accountRepository.save(account);
+    }
 
 
 
