@@ -37,7 +37,7 @@ public class Exam {
     private int passingScore;
 
     @Column(name = "switch_tabs")
-    private int switchTabs;
+    private Integer switchTabs;
 
     @Column(name = "status", columnDefinition = "tinyint")
     private int status;

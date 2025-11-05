@@ -18,8 +18,8 @@ public class Lesson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "class_room_id", nullable = false)
+    
+    @Column(name = "class_room_id")
     private Long classRoomId;
 
     @Column(length = 255)
