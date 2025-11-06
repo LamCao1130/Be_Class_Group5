@@ -41,7 +41,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         log.info("Attempting to authenticate using token {}", token);
 
-        String username = jwtService.extractUsername(token);
+        String username = null;
+
+        try {
+            username = jwtService.extractUsername(token);
+            log.info("Found username {}", username);
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            log.warn("Access token expired: {}", e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Access token expired");
+            return;
+        }
 
         log.info("Found username {}", username);
 
@@ -62,6 +72,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+            else{
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Access token expired");
+                return;
             }
         }
 
