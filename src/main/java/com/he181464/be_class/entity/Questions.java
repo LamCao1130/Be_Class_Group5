@@ -44,6 +44,6 @@ public class Questions {
     @JoinColumn(name = "question_type_id")
     private QuestionType questionType;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "questions", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "questions", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<QuestionOption> questionOptions;
 }
