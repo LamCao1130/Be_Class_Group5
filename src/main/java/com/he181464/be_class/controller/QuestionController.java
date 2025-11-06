@@ -13,14 +13,36 @@ import org.springframework.web.bind.annotation.*;
 public class QuestionController {
     private final QuestionService questionService;
 
-//    @GetMapping("/lesson/{id}")
-//    public ResponseEntity<?>getByLessonId(@PathVariable Long lessonId){
-//        return ResponseEntity.ok(questionTypeService.findByLessonId(lessonId));
-//    }
+    @GetMapping("/lesson/{lessonId}")
+    public ResponseEntity<?>getByLessonId(@PathVariable Long lessonId){
+        return ResponseEntity.ok(questionService.getListQuestionByLesson(lessonId));
+    }
 
 
     @PostMapping("/create")
     public ResponseEntity<?>createListQuestion(@RequestBody QuestionCreateDto questionCreateDto){
         return ResponseEntity.ok(questionService.createListQuestion(questionCreateDto));
+    }
+
+    @DeleteMapping("/deleteByQuestionType/{id}")
+    public ResponseEntity<?>deleteQuestionByQuestionType(@PathVariable Integer id){
+        questionService.deleteQuestionByQuestionType(id);
+        return ResponseEntity.ok("Deleted");
+    }
+    
+    @DeleteMapping("delete/reading/{id}")
+    public ResponseEntity<?>deleteReading(@PathVariable Integer id){
+        questionService.deleteReadingPassage(id);
+        return ResponseEntity.ok("Deleted Reading passage succes");
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<?>updateQuetion(@RequestBody QuestionCreateDto questionCreateDto){
+        return ResponseEntity.ok(questionService.updateQuestion(questionCreateDto));
+    }
+
+    @GetMapping("/questionType/{id}")
+    public ResponseEntity<?>getByQuestionType(@PathVariable Integer id){
+        return ResponseEntity.ok(questionService.getQuestionByQuestionTypeId(id));
     }
 }
