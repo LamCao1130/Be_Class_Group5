@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -74,6 +73,137 @@ public class QuestionImpl implements QuestionService {
         return questionCreateDto;
     }
 
+    @Override
+    public List<QuestionCreateDto> getListQuestionByLesson(Long id) {
+        List<QuestionType> questionTypes = questionTypeRepository.findByLessonId(id);
+        List<Questions> questionsList = questionRepository.findByQuestionType_LessonId(id);
+        List<QuestionOption> questionOptionList = questionRepository.findQuestionOptionByLessonId(id);
+        Map<Integer, List<Questions>> questionByTypeId = questionsList.stream().collect(Collectors.groupingBy(questions -> questions.getQuestionType().getId()));
+        Map<Integer, List<QuestionOption>> questionOptionByQuestion = questionOptionList.stream().collect(Collectors.groupingBy(questionOption -> questionOption.getQuestions().getId()));
+        List<QuestionCreateDto> questionCreateDtos = new ArrayList<>();
+        for (QuestionType questionType : questionTypes) {
+            QuestionTypeDto questionTypeDto = questionTypeMapper.toQuestionTypeDto(questionType);
+            questionTypeDto.setLessonId(id);
+            questionTypeDto.setQuestionTypeId(questionType.getId());
+            List<Questions> questions = questionByTypeId.get(questionTypeDto.getQuestionTypeId());
+            List<QuestionDto> questionDtos = questions.stream().map(question -> {
+                QuestionDto questionDto = questionMapper.toQuestionDto(question);
+                questionDto.setQuestionTypeId(questionType.getId());
+                if (questionType.getType().equalsIgnoreCase("reading") || questionType.getType().equalsIgnoreCase("mc")) {
+                    List<QuestionOption> questionOptions = questionOptionByQuestion.get(question.getId());
+                    List<QuestionOptionDto> questionOptionDtos = questionOptions.stream().map(questionOption -> {
+                        QuestionOptionDto questionOptionDto = questionOptionMapper.toQuestionOptionDto(questionOption);
+                        return questionOptionDto;
+                    }).toList();
+                    questionDto.setOptions(questionOptionDtos);
+                }
+                return questionDto;
+            }).toList();
+            questionTypeDto.setQuestions(questionDtos);
+            QuestionCreateDto questionCreateDto = new QuestionCreateDto();
+            questionCreateDto.setQuestionTypeDto(questionTypeDto);
+            if (questionType.getType().equalsIgnoreCase("reading")) {
+                ReadingPassage readingPassage = questions.get(0).getReadingPassage();
+                ReadingDto readingDto = readingMapper.toReadingDto(readingPassage);
+                questionCreateDto.setReadingDto(readingDto);
+            }
+            questionCreateDtos.add(questionCreateDto);
+        }
+        return questionCreateDtos;
+    }
+
+    @Override
+    public void deleteQuestionByQuestionType(Integer id) {
+        questionTypeRepository.deleteById(id);
+    }
+
+    @Override
+    public void deleteReadingPassage(Integer id) {
+        readingRepository.deleteById(id);
+    }
+
+    @Override
+    public QuestionCreateDto updateQuestion(QuestionCreateDto questionCreateDto) {
+        QuestionTypeDto questionTypeDto = questionCreateDto.getQuestionTypeDto();
+        QuestionType savedQuestionType = questionTypeMapper.toQuestionTypeEntity(questionTypeDto);
+        savedQuestionType.setLesson(lessonRepository.findById(questionCreateDto.getQuestionTypeDto().getLessonId()).orElseThrow(
+                () -> new IllegalArgumentException("Khong tim thay id")
+        ));
+        savedQuestionType.setId(questionTypeDto.getQuestionTypeId());
+        ReadingPassage readingPassage = new ReadingPassage();
+        if (savedQuestionType.getType().equalsIgnoreCase("reading")) {
+            readingPassage = readingMapper.toReadingPassageEntity(
+                    questionCreateDto.getReadingDto());
+            readingPassage.setLesson(savedQuestionType.getLesson());
+            readingPassage = readingRepository.save(readingPassage);
+        }
+
+        ReadingPassage finalReadingPassage = readingPassage;
+        List<Questions> questions = questionTypeDto.getQuestions().stream()
+                .map(item -> {
+                    Questions question = questionMapper.toQuestionEntity(item);
+                    question.setQuestionType(savedQuestionType);
+                    if (questionTypeDto.getType().equalsIgnoreCase("reading")) {
+                        question.setReadingPassage(finalReadingPassage);
+                    }
+                    if (questionTypeDto.getType().equalsIgnoreCase("mc") ||
+                            questionTypeDto.getType().equalsIgnoreCase("reading")) {
+                        List<QuestionOption> questionOptions = item.getOptions().stream()
+                                .map(questionOptionDto -> {
+                                    QuestionOption questionOption = questionOptionMapper.toQuestionOptionEntity(questionOptionDto);
+                                    questionOption.setQuestions(question);
+                                    return questionOption;
+                                }).toList();
+
+                        question.setQuestionOptions(questionOptions);
+                    }
+
+                    return question;
+                })
+                .toList();
+
+        savedQuestionType.setQuestions(questions);
+
+        questionTypeRepository.save(savedQuestionType);
+
+        return questionCreateDto;
+    }
+
+    @Override
+    public QuestionCreateDto getQuestionByQuestionTypeId(Integer id) {
+        QuestionType questionType = questionTypeRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("Khong tim thay question type id")
+        );
+        List<Questions> questionsList = questionRepository.findByQuestionType_Id(id);
+        List<QuestionOption> questionOptionList = questionRepository.findQuestionOptionByQuestionTypeId(id);
+        Map<Integer, List<QuestionOption>> questionOptionByQuestion = questionOptionList.stream().collect(Collectors.groupingBy(questionOption -> questionOption.getQuestions().getId()));
+        QuestionTypeDto questionTypeDto = questionTypeMapper.toQuestionTypeDto(questionType);
+        questionTypeDto.setLessonId(questionType.getLesson().getId());
+        questionTypeDto.setQuestionTypeId(questionType.getId());
+        List<QuestionDto> questionDtos = questionsList.stream().map(question -> {
+            QuestionDto questionDto = questionMapper.toQuestionDto(question);
+            questionDto.setQuestionTypeId(questionType.getId());
+            if (questionType.getType().equalsIgnoreCase("reading") || questionType.getType().equalsIgnoreCase("mc")) {
+                List<QuestionOption> questionOptions = questionOptionByQuestion.get(question.getId());
+                List<QuestionOptionDto> questionOptionDtos = questionOptions.stream().map(questionOption -> {
+                    QuestionOptionDto questionOptionDto = questionOptionMapper.toQuestionOptionDto(questionOption);
+                    return questionOptionDto;
+                }).toList();
+                questionDto.setOptions(questionOptionDtos);
+            }
+            return questionDto;
+        }).toList();
+        questionTypeDto.setQuestions(questionDtos);
+        QuestionCreateDto questionCreateDto = new QuestionCreateDto();
+        questionCreateDto.setQuestionTypeDto(questionTypeDto);
+        if (questionType.getType().equalsIgnoreCase("reading")) {
+            ReadingPassage readingPassage = questionsList.get(0).getReadingPassage();
+            ReadingDto readingDto = readingMapper.toReadingDto(readingPassage);
+            questionCreateDto.setReadingDto(readingDto);
+        }
+
+        return questionCreateDto;
+    }
 
 
 }
