@@ -5,6 +5,7 @@ import com.he181464.be_class.service.LessonService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,6 +26,4 @@ public class LessonController {
     public ResponseEntity<?> getLessonsByClassRoomId(@PathVariable Long id) {
         return ResponseEntity.ok(lessonService.getLessonsByClassRoomId(id));
     }
-
-
 }
