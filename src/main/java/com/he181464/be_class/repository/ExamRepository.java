@@ -13,5 +13,5 @@ public interface ExamRepository extends JpaRepository<Exam,Integer> {
             "join e.classRoom cr " +
             "where cr.teacherId = :teacherId")
     List<Exam> findAllByTeacherId(@Param("teacherId") Long teacherId);
-
+    List<Exam> findByClassRoomId( Long classRoomId);
 }

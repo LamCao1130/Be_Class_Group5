@@ -23,6 +23,7 @@ public interface ClassRoomStudentRepository extends JpaRepository<ClassRoomStude
     @Query("""
         SELECT new com.he181464.be_class.dto.ClassRoomStudentDTO(
             crs.studentId,
+                crs.classRoomId,
             cr.name,
             cr.title,
             t.fullName
