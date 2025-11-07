@@ -22,6 +22,11 @@ public class LessonController {
         return ResponseEntity.ok(createdLesson);
     }
 
+    @GetMapping("/get-detail/{id}")
+    public ResponseEntity<?> getLessonDetailById(@PathVariable Long id) {
+        return ResponseEntity.ok(lessonService.getLessonDetailById(id));
+    }
+
     @GetMapping("/get-by-classRoomId/{id}")
     public ResponseEntity<?> getLessonsByClassRoomId(@PathVariable Long id) {
         return ResponseEntity.ok(lessonService.getLessonsByClassRoomId(id));

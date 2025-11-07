@@ -1,11 +1,14 @@
 package com.he181464.be_class.controller;
 
+import com.he181464.be_class.dto.AnswerCheckDto;
 import com.he181464.be_class.dto.QuestionCreateDto;
 import com.he181464.be_class.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/api/v1/Question")
@@ -44,5 +47,10 @@ public class QuestionController {
     @GetMapping("/questionType/{id}")
     public ResponseEntity<?>getByQuestionType(@PathVariable Integer id){
         return ResponseEntity.ok(questionService.getQuestionByQuestionTypeId(id));
+    }
+
+    @PostMapping("/check-answer" )
+    public ResponseEntity<?>checkAnswer(@RequestBody List<AnswerCheckDto> answers){
+        return ResponseEntity.ok(questionService.checkAnswer(answers));
     }
 }
