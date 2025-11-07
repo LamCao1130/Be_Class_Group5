@@ -3,10 +3,13 @@ package com.he181464.be_class.service.serviceImpl;
 import com.he181464.be_class.constant.AppConstant;
 import com.he181464.be_class.dto.ClassRoomDto;
 import com.he181464.be_class.entity.ClassRoom;
+import com.he181464.be_class.entity.ClassRoomStudent;
 import com.he181464.be_class.mapper.ClassRoomMapper;
 import com.he181464.be_class.repository.ClassRoomRepository;
+import com.he181464.be_class.repository.ClassRoomStudentRepository;
 import com.he181464.be_class.service.ClassRoomService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +26,8 @@ public class ClassRoomServiceImpl implements ClassRoomService {
     private final ClassRoomRepository classRoomRepository;
 
     private final ClassRoomMapper classRoomMapper;
+
+    private final ClassRoomStudentRepository classRoomStudentRepository;
 
     @Override
     @Transactional
@@ -101,6 +106,8 @@ public class ClassRoomServiceImpl implements ClassRoomService {
         classRoomDto.setTeacherName(classRoom.getTeacher().getFullName());
         return classRoomDto;
     }
+
+
 
 
     private String generateCode() {
