@@ -13,5 +13,7 @@ public interface LessonService {
 
     List<LessonDto> getLessonsByClassRoomId(Long classRoomId);
 
+    LessonDto getLessonDetailById(Long lessonId);
+
 
 }

@@ -15,7 +15,7 @@ import java.util.Date;
 public class LessonNotes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "note_type", columnDefinition = "varchar(20)")
     private String noteType;

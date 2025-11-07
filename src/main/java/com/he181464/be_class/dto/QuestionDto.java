@@ -25,6 +25,7 @@ public class QuestionDto {
 
     private Integer questionTypeId;
 
+    private String questionTypeName;
 
     private List<QuestionOptionDto> options;
 }

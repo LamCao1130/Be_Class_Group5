@@ -15,7 +15,7 @@ import java.util.Date;
 public class HomeworkSubmissions {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "submission_context", columnDefinition = "text")
     private String submissionContext;

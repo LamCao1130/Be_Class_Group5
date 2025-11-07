@@ -18,6 +18,8 @@ public class QuestionTypeDto {
 
     private Integer questionTypeId;
 
+    private Integer id;
+
     private String type;
 
     private List<QuestionDto> questions;
