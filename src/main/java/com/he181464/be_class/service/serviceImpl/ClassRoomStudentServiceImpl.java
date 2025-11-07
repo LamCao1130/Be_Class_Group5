@@ -15,21 +15,45 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ClassRoomStudentServiceImpl implements ClassRoomStudentDTOService {
-    @Autowired
     private final ClassRoomRepository classRoomRepository;
-    @Autowired
+
     private final ClassRoomStudentRepository classRoomStudentRepository;
-    @Autowired
+
     private final ClassRoomStudentMapper classRoomStudentMapper;
+
     @Override
     public Page<ClassRoomStudentDTO> getClassRoomStudentsByStudentId(long accountId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return classRoomStudentRepository.findClassRoomByStudentId(accountId, pageable);
     }
+
+    @Override
+    public ClassRoomStudentDTO joinClassRoomByCode(long studentId, String code) {
+        ClassRoom classRoom = classRoomRepository.findByCode(code);
+        if(classRoom!= null){
+            if(classRoomStudentRepository.findByClassRoomIdAndStudentId(classRoom.getId(), studentId) != null){
+                throw new IllegalArgumentException("Học sinh đã tham gia lớp học này");
+            }
+            ClassRoomStudent classRoomStudent = new ClassRoomStudent();
+            classRoomStudent.setClassRoomId(classRoom.getId());
+            classRoomStudent.setStudentId(studentId);
+            classRoomStudent.setJoinDate(LocalDateTime.now());
+            ClassRoomStudent saved = classRoomStudentRepository.save(classRoomStudent);
+            return classRoomStudentMapper.toDTO(saved);
+        }
+        else{
+            throw new IllegalArgumentException("Mã lớp học không tồn tại");
+        }
+    }
+
+
 }

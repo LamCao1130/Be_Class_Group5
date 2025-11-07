@@ -42,7 +42,7 @@ public class JwtService {
                 .claim("accountId", account.getId())
                 .setIssuer("engLessons-app")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 ))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 ))
                 .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS256)
                 .compact();
     }
