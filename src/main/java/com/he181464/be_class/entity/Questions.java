@@ -16,7 +16,7 @@ import java.util.List;
 public class Questions {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "question_text", columnDefinition = "text")
     private String questionText;
@@ -35,6 +35,9 @@ public class Questions {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Column(name = "question_type_id", insertable = false, updatable = false)
+    private Integer questionTypeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reading_passage_id")
