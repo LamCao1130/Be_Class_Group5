@@ -2,7 +2,6 @@ package com.he181464.be_class.service.serviceImpl;
 
 import com.he181464.be_class.constant.AppConstant;
 import com.he181464.be_class.dto.ClassRoomDto;
-import com.he181464.be_class.dto.JoinClassroomDto;
 import com.he181464.be_class.entity.ClassRoom;
 import com.he181464.be_class.entity.ClassRoomStudent;
 import com.he181464.be_class.mapper.ClassRoomMapper;
@@ -108,23 +107,7 @@ public class ClassRoomServiceImpl implements ClassRoomService {
         return classRoomDto;
     }
 
-    @Transactional
-    @Override
-    public void joinClassroom(JoinClassroomDto joinClassroomDto) {
-        ClassRoom classRoom = classRoomRepository.findByCode(joinClassroomDto.getCode())
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy code"));
-        if (classRoomStudentRepository.findByStudentAndClassroom(joinClassroomDto.getAccountId()
-                , classRoom.getId()) != null) {
-            throw new DuplicateKeyException("Trung classRoom roi");
-        }
-        if (classRoom != null) {
-            ClassRoomStudent classRoomStudent = new ClassRoomStudent();
-            classRoomStudent.setClassRoomId(classRoom.getId());
-            classRoomStudent.setStudentId(joinClassroomDto.getAccountId());
-            classRoomStudent.setJoinDate(LocalDateTime.now());
-            classRoomStudentRepository.save(classRoomStudent);
-        }
-    }
+
 
 
     private String generateCode() {
