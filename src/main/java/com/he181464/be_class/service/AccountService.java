@@ -29,4 +29,6 @@ public interface AccountService {
     AccountDto updateAccount(AccountDto accountDto,long accountId);
     boolean passwordMatches(String rawPassword, String encodedPassword);
     void changePassword(Account account,String newPassword);
+
+
 }

@@ -7,4 +7,13 @@ import java.util.List;
 public interface QuestionService {
     QuestionCreateDto createListQuestion(QuestionCreateDto questionCreateDto);
 
+    List<QuestionCreateDto> getListQuestionByLesson(Long id);
+
+    void deleteQuestionByQuestionType(Integer id);
+
+    void deleteReadingPassage(Integer id);
+
+    QuestionCreateDto updateQuestion(QuestionCreateDto questionCreateDto);
+
+    QuestionCreateDto getQuestionByQuestionTypeId(Integer id);
 }
