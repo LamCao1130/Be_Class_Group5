@@ -13,6 +13,8 @@ public interface ClassRoomRepository extends JpaRepository<ClassRoom, Long> {
 
     List<ClassRoom> findByTeacherIdAndStatus(Long teacherId, String status);
 
+    ClassRoom findByCode(String code);
+
     //List<Long> findByTeacherIdAndStatus(Long teacherId, String status);
 
 }
