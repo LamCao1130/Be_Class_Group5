@@ -25,6 +25,8 @@ public class QuestionDto {
 
     private Integer questionTypeId;
 
+    private String listeningText;
 
     private List<QuestionOptionDto> options;
+
 }
