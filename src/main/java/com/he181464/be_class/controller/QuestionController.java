@@ -36,7 +36,13 @@ public class QuestionController {
     @DeleteMapping("delete/reading/{id}")
     public ResponseEntity<?>deleteReading(@PathVariable Integer id){
         questionService.deleteReadingPassage(id);
-        return ResponseEntity.ok("Deleted Reading passage succes");
+        return ResponseEntity.ok("Deleted Reading passage success");
+    }
+
+    @DeleteMapping("delete/listening/{id}")
+    public ResponseEntity<?>deleteListening(@PathVariable Integer id){
+        questionService.deleteListeningPassage(id);
+        return ResponseEntity.ok("Deleted Listening passage success");
     }
 
     @PutMapping("/update")
