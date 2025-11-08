@@ -6,4 +6,7 @@ import org.springframework.data.domain.Page;
 
 public interface ClassRoomStudentDTOService {
     Page<ClassRoomStudentDTO> getClassRoomStudentsByStudentId(long accountId, int page, int size);
+
+    ClassRoomStudentDTO joinClassRoomByCode(long studentId, String code);
+
 }

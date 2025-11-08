@@ -2,7 +2,6 @@ package com.he181464.be_class.controller;
 
 import com.he181464.be_class.dto.ClassRoomDto;
 import com.he181464.be_class.dto.ClassRoomStudentDTO;
-import com.he181464.be_class.dto.JoinClassroomDto;
 import com.he181464.be_class.service.ClassRoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,11 +38,5 @@ public class ClassRoomController {
     @GetMapping("/get/{id}")
     public ResponseEntity<?> getClassRoomById(@PathVariable Long id) {
         return ResponseEntity.ok(classRoomService.getClassRoomById(id));
-    }
-
-    @PostMapping("/join")
-    public ResponseEntity<?> joinClassroom(@RequestBody JoinClassroomDto joinClassroomDto){
-        classRoomService.joinClassroom(joinClassroomDto);
-        return ResponseEntity.ok("Join success");
     }
 }

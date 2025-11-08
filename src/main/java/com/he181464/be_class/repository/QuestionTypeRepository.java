@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface QuestionTypeRepository extends JpaRepository<QuestionType,Integer> {
     List<QuestionType> findByLessonId(Long lessonId);
+
+    List<QuestionType> findByLessonIdAndType(Long lessonId, String type);
 }
