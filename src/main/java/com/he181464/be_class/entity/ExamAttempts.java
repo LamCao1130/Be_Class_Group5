@@ -27,7 +27,7 @@ public class ExamAttempts {
     private Account student;
 
     @Column(name = "score", precision = 5, scale = 2)
-    private int score;
+    private Integer score;
 
     @Column(name = "time_spent")
     private Integer timeSpent;
