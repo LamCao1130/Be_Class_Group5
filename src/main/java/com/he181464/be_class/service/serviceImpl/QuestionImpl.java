@@ -2,10 +2,7 @@ package com.he181464.be_class.service.serviceImpl;
 
 import com.he181464.be_class.dto.*;
 import com.he181464.be_class.entity.*;
-import com.he181464.be_class.mapper.QuestionMapper;
-import com.he181464.be_class.mapper.QuestionOptionMapper;
-import com.he181464.be_class.mapper.QuestionTypeMapper;
-import com.he181464.be_class.mapper.ReadingMapper;
+import com.he181464.be_class.mapper.*;
 import com.he181464.be_class.repository.*;
 import com.he181464.be_class.service.QuestionService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +27,8 @@ public class QuestionImpl implements QuestionService {
     private final QuestionOptionMapper questionOptionMapper;
     private final ReadingRepository readingRepository;
     private final ReadingMapper readingMapper;
+    private final ListeningPassageRepository listeningPassageRepository;
+    private final ListeningPassageMapper listeningPassageMapper;
 
     @Transactional
     @Override
@@ -41,8 +40,20 @@ public class QuestionImpl implements QuestionService {
         if (readingDto != null) {
             ReadingPassage readingEntity = readingMapper.toReadingPassageEntity(readingDto);
             readingEntity.setLesson(lesson);
+            readingEntity.setCreatedAt(LocalDateTime.now());
             savedReading = readingRepository.save(readingEntity);
         }
+
+        ListeningPassageDto listeningPassageDto = questionCreateDto.getListeningPassageDto();
+        ListeningPassage savedListening = null;
+
+        if (listeningPassageDto != null) {
+            ListeningPassage listeningEntity = listeningPassageMapper.toListeningPassageEntity(listeningPassageDto);
+            listeningEntity.setLesson(lesson);
+            listeningEntity.setCreatedAt(LocalDateTime.now());
+            savedListening = listeningPassageRepository.save(listeningEntity);
+        }
+
         QuestionType questionType = questionTypeMapper.toQuestionTypeEntity(questionCreateDto.getQuestionTypeDto());
         questionType.setLesson(lesson);
         questionType.setType(questionCreateDto.getQuestionTypeDto().getType());
@@ -55,6 +66,9 @@ public class QuestionImpl implements QuestionService {
             question.setCreatedAt(LocalDateTime.now());
             if (savedReading != null) {
                 question.setReadingPassage(savedReading);
+            }
+            if (savedListening != null) {
+                question.setListeningPassage(savedListening);
             }
 
             if (questionDto.getOptions() != null) {
@@ -82,14 +96,39 @@ public class QuestionImpl implements QuestionService {
         Map<Integer, List<QuestionOption>> questionOptionByQuestion = questionOptionList.stream().collect(Collectors.groupingBy(questionOption -> questionOption.getQuestions().getId()));
         List<QuestionCreateDto> questionCreateDtos = new ArrayList<>();
         for (QuestionType questionType : questionTypes) {
+            QuestionCreateDto questionCreateDto = new QuestionCreateDto();
             QuestionTypeDto questionTypeDto = questionTypeMapper.toQuestionTypeDto(questionType);
             questionTypeDto.setLessonId(id);
             questionTypeDto.setQuestionTypeId(questionType.getId());
             List<Questions> questions = questionByTypeId.get(questionTypeDto.getQuestionTypeId());
+            ListeningPassage listeningPassage;
+            Boolean isLong;
+            if (questionType.getType().equalsIgnoreCase("listening")) {
+                listeningPassage = questions.get(0).getListeningPassage();
+                questionCreateDto.setListeningPassageDto(listeningPassageMapper.
+                        toListeningPassageDto(listeningPassage));
+                if(listeningPassage.getPassage_type().equalsIgnoreCase("long")){
+
+                    isLong=true;
+                } else {
+                    isLong = false;
+                }
+            } else {
+                isLong = false;
+            }
+            ReadingPassage readingPassage;
+            if (questionType.getType().equalsIgnoreCase("reading")) {
+                readingPassage = questions.get(0).getReadingPassage();
+                ReadingDto readingDto = readingMapper.toReadingDto(readingPassage);
+                questionCreateDto.setReadingDto(readingDto);
+            } else {
+                readingPassage = null;
+            }
             List<QuestionDto> questionDtos = questions.stream().map(question -> {
                 QuestionDto questionDto = questionMapper.toQuestionDto(question);
                 questionDto.setQuestionTypeId(questionType.getId());
-                if (questionType.getType().equalsIgnoreCase("reading") || questionType.getType().equalsIgnoreCase("mc")) {
+                if ((readingPassage != null) || questionType.getType().equalsIgnoreCase("mc")
+                        ||isLong) {
                     List<QuestionOption> questionOptions = questionOptionByQuestion.get(question.getId());
                     List<QuestionOptionDto> questionOptionDtos = questionOptions.stream().map(questionOption -> {
                         QuestionOptionDto questionOptionDto = questionOptionMapper.toQuestionOptionDto(questionOption);
@@ -97,16 +136,17 @@ public class QuestionImpl implements QuestionService {
                     }).toList();
                     questionDto.setOptions(questionOptionDtos);
                 }
+                if(!isLong&&questionType.getType().equalsIgnoreCase("listening")){
+                    ListeningPassageDto listeningPassageDto = listeningPassageMapper.toListeningPassageDto(question.getListeningPassage());
+                }
+                if (readingPassage != null) {
+                    questionDto.setReadingPassageId(readingPassage.getId());
+                }
                 return questionDto;
             }).toList();
             questionTypeDto.setQuestions(questionDtos);
-            QuestionCreateDto questionCreateDto = new QuestionCreateDto();
             questionCreateDto.setQuestionTypeDto(questionTypeDto);
-            if (questionType.getType().equalsIgnoreCase("reading")) {
-                ReadingPassage readingPassage = questions.get(0).getReadingPassage();
-                ReadingDto readingDto = readingMapper.toReadingDto(readingPassage);
-                questionCreateDto.setReadingDto(readingDto);
-            }
+
             questionCreateDtos.add(questionCreateDto);
         }
         return questionCreateDtos;
@@ -114,7 +154,11 @@ public class QuestionImpl implements QuestionService {
 
     @Override
     public void deleteQuestionByQuestionType(Integer id) {
+        QuestionType questionType = questionTypeRepository.findById(id).
+                orElseThrow(()->new IllegalArgumentException("Khong tim thay questio type id"));
+
         questionTypeRepository.deleteById(id);
+
     }
 
     @Override
@@ -123,6 +167,12 @@ public class QuestionImpl implements QuestionService {
     }
 
     @Override
+    public void deleteListeningPassage(Integer id) {
+        listeningPassageRepository.deleteById(id);
+    }
+
+@Transactional
+    @Override
     public QuestionCreateDto updateQuestion(QuestionCreateDto questionCreateDto) {
         QuestionTypeDto questionTypeDto = questionCreateDto.getQuestionTypeDto();
         QuestionType savedQuestionType = questionTypeMapper.toQuestionTypeEntity(questionTypeDto);
@@ -130,24 +180,36 @@ public class QuestionImpl implements QuestionService {
                 () -> new IllegalArgumentException("Khong tim thay id")
         ));
         savedQuestionType.setId(questionTypeDto.getQuestionTypeId());
-        ReadingPassage readingPassage = new ReadingPassage();
+        ReadingPassage readingPassage =null;
+        ListeningPassage listeningPassage=null;
         if (savedQuestionType.getType().equalsIgnoreCase("reading")) {
             readingPassage = readingMapper.toReadingPassageEntity(
                     questionCreateDto.getReadingDto());
             readingPassage.setLesson(savedQuestionType.getLesson());
             readingPassage = readingRepository.save(readingPassage);
         }
+        if (savedQuestionType.getType().equalsIgnoreCase("listening")) {
+            listeningPassage = listeningPassageMapper.toListeningPassageEntity(
+                    questionCreateDto.getListeningPassageDto());
+            listeningPassage.setLesson(savedQuestionType.getLesson());
+            listeningPassage = listeningPassageRepository.save(listeningPassage);
+        }
 
         ReadingPassage finalReadingPassage = readingPassage;
+        ListeningPassage finalListeningPassage = listeningPassage;
         List<Questions> questions = questionTypeDto.getQuestions().stream()
                 .map(item -> {
                     Questions question = questionMapper.toQuestionEntity(item);
                     question.setQuestionType(savedQuestionType);
                     if (questionTypeDto.getType().equalsIgnoreCase("reading")) {
                         question.setReadingPassage(finalReadingPassage);
+                    } else if (finalListeningPassage != null) {
+                        question.setListeningPassage(finalListeningPassage);
                     }
-                    if (questionTypeDto.getType().equalsIgnoreCase("mc") ||
-                            questionTypeDto.getType().equalsIgnoreCase("reading")) {
+                    if (questionTypeDto.getType().equalsIgnoreCase("mc")
+                            || questionTypeDto.getType().equalsIgnoreCase("reading")
+                            || (finalListeningPassage.getPassage_type().equalsIgnoreCase("long"))) {
+
                         List<QuestionOption> questionOptions = item.getOptions().stream()
                                 .map(questionOptionDto -> {
                                     QuestionOption questionOption = questionOptionMapper.toQuestionOptionEntity(questionOptionDto);
@@ -174,16 +236,41 @@ public class QuestionImpl implements QuestionService {
         QuestionType questionType = questionTypeRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("Khong tim thay question type id")
         );
+        QuestionCreateDto questionCreateDto = new QuestionCreateDto();
+
         List<Questions> questionsList = questionRepository.findByQuestionType_Id(id);
+        ListeningPassage listeningPassage;
+        if (questionType.getType().equalsIgnoreCase("listening")) {
+            listeningPassage = questionsList.get(0).getListeningPassage();
+            ListeningPassageDto listeningPassageDto = listeningPassageMapper.toListeningPassageDto(
+                    listeningPassage);
+            questionCreateDto.setListeningPassageDto(listeningPassageDto);
+        } else {
+            listeningPassage = null;
+        }
+        ReadingPassage readingPassage;
+        if (questionType.getType().equalsIgnoreCase("reading")) {
+            readingPassage = questionsList.get(0).getReadingPassage();
+            ReadingDto readingDto = readingMapper.toReadingDto(readingPassage);
+            questionCreateDto.setReadingDto(readingDto);
+        } else {
+            readingPassage = null;
+        }
         List<QuestionOption> questionOptionList = questionRepository.findQuestionOptionByQuestionTypeId(id);
         Map<Integer, List<QuestionOption>> questionOptionByQuestion = questionOptionList.stream().collect(Collectors.groupingBy(questionOption -> questionOption.getQuestions().getId()));
         QuestionTypeDto questionTypeDto = questionTypeMapper.toQuestionTypeDto(questionType);
         questionTypeDto.setLessonId(questionType.getLesson().getId());
         questionTypeDto.setQuestionTypeId(questionType.getId());
+
         List<QuestionDto> questionDtos = questionsList.stream().map(question -> {
             QuestionDto questionDto = questionMapper.toQuestionDto(question);
+            if (readingPassage != null) {
+                questionDto.setReadingPassageId(readingPassage.getId());
+            }
             questionDto.setQuestionTypeId(questionType.getId());
-            if (questionType.getType().equalsIgnoreCase("reading") || questionType.getType().equalsIgnoreCase("mc")) {
+            if (questionType.getType().equalsIgnoreCase("reading")
+                    || questionType.getType().equalsIgnoreCase("mc")
+                    || (listeningPassage != null && listeningPassage.getPassage_type().equalsIgnoreCase("long"))) {
                 List<QuestionOption> questionOptions = questionOptionByQuestion.get(question.getId());
                 List<QuestionOptionDto> questionOptionDtos = questionOptions.stream().map(questionOption -> {
                     QuestionOptionDto questionOptionDto = questionOptionMapper.toQuestionOptionDto(questionOption);
@@ -194,13 +281,8 @@ public class QuestionImpl implements QuestionService {
             return questionDto;
         }).toList();
         questionTypeDto.setQuestions(questionDtos);
-        QuestionCreateDto questionCreateDto = new QuestionCreateDto();
         questionCreateDto.setQuestionTypeDto(questionTypeDto);
-        if (questionType.getType().equalsIgnoreCase("reading")) {
-            ReadingPassage readingPassage = questionsList.get(0).getReadingPassage();
-            ReadingDto readingDto = readingMapper.toReadingDto(readingPassage);
-            questionCreateDto.setReadingDto(readingDto);
-        }
+
 
         return questionCreateDto;
     }
