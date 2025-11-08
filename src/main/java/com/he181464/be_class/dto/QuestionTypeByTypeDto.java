@@ -5,10 +5,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class JoinClassroomDto {
-    private String code;
+@NoArgsConstructor
+public class QuestionTypeByTypeDto {
 
-    private Long accountId;
+    private String type;
+
+    private Long lessonId;
+
 }

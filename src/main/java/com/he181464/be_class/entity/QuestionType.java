@@ -16,12 +16,15 @@ public class QuestionType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "type")
     private String type;
     @Column(name = "name")
     private String name;
+
+    @Column(name = "lesson_id", insertable = false, updatable = false)
+    private Integer lessonId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lesson_id")

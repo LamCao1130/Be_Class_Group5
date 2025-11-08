@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @Controller
-@RequestMapping("/api/v1/public/vocab/")
+@RequestMapping("/api/v1/vocab/")
 @RequiredArgsConstructor
 
 public class VocabController {

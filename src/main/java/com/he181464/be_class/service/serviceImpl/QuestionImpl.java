@@ -287,5 +287,53 @@ public class QuestionImpl implements QuestionService {
         return questionCreateDto;
     }
 
+    @Override
+    public List<AnswerCheckedDto> checkAnswer(List<AnswerCheckDto> answers) {
+        List<AnswerCheckedDto> resultFail = new ArrayList<>();
+        for( AnswerCheckDto answerCheckDto : answers){
+            Questions question = questionRepository.findById(answerCheckDto.getQuestionId()).orElseThrow(
+                    ()-> new IllegalArgumentException("Khong tim thay cau hoi voi id la"+ answerCheckDto.getQuestionId())
+            );
+            if(question.getQuestionType().getType().equalsIgnoreCase("fill")){
+                if(!question.getCorrectAnswer().trim().equalsIgnoreCase(answerCheckDto.getTextAnswer().trim())){
+                    AnswerCheckedDto answerCheckedDto = new AnswerCheckedDto();
+                    answerCheckedDto.setQuestionId(question.getId());
+                    answerCheckedDto.setQuestionText(question.getQuestionText());
+                    answerCheckedDto.setTextTrueAnswer(question.getCorrectAnswer());
+                    resultFail.add(answerCheckedDto);
+                }
+            }
+            else if(question.getQuestionType().getType().equalsIgnoreCase("mc") ){
+                List<QuestionOption> correctOptions = question.getQuestionOptions().stream()
+                        .filter(QuestionOption::getCorrectAnswer)
+                        .toList();
+                int c=0;
+                for(Integer checkOption : answerCheckDto.getSelected()){
+                    for(QuestionOption option : correctOptions){
+                        if(option.getId().equals(checkOption)){
+                            c++;
+                        }
+                    }
+                }
+                if(c==correctOptions.size() && c== answerCheckDto.getSelected().size()) {
+                    continue;
+                }
+                else{
+                    AnswerCheckedDto answerCheckedDto = new AnswerCheckedDto();
+                    answerCheckedDto.setQuestionId(question.getId());
+                    answerCheckedDto.setQuestionText(question.getQuestionText());
+                    String optionTrueAnswer ="";
+                    for(QuestionOption option : correctOptions){
+                        optionTrueAnswer += option.getOptionText()+"; ";
+                    }
+                    answerCheckedDto.setTextTrueAnswer(optionTrueAnswer);
+                    resultFail.add(answerCheckedDto);
+                }
+            }
+
+        }
+        return resultFail;
+    }
+
 
 }
