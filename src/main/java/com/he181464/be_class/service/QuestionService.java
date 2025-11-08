@@ -13,6 +13,8 @@ public interface QuestionService {
 
     void deleteReadingPassage(Integer id);
 
+    void deleteListeningPassage(Integer id);
+
     QuestionCreateDto updateQuestion(QuestionCreateDto questionCreateDto);
 
     QuestionCreateDto getQuestionByQuestionTypeId(Integer id);

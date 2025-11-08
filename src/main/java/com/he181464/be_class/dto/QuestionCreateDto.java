@@ -13,4 +13,6 @@ public class QuestionCreateDto {
 
     private ReadingDto readingDto;
 
+    private ListeningPassageDto listeningPassageDto;
+
 }

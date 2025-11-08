@@ -36,6 +36,9 @@ public class Questions {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "listening_text",columnDefinition = "text")
+    private String listeningText;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reading_passage_id")
     private ReadingPassage readingPassage;
@@ -46,4 +49,8 @@ public class Questions {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "questions", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<QuestionOption> questionOptions;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "listening_passage_id")
+    private ListeningPassage listeningPassage;
 }
