@@ -2,6 +2,7 @@ package com.he181464.be_class.service;
 
 import com.he181464.be_class.dto.AnswerCheckDto;
 import com.he181464.be_class.dto.AnswerCheckedDto;
+import com.he181464.be_class.dto.ListeningPassageDto;
 import com.he181464.be_class.dto.QuestionCreateDto;
 
 import java.util.List;
@@ -22,4 +23,8 @@ public interface QuestionService {
     QuestionCreateDto getQuestionByQuestionTypeId(Integer id);
 
     List<AnswerCheckedDto> checkAnswer(List<AnswerCheckDto> answers);
+
+    List<AnswerCheckedDto> checkAnswerVocab(List<AnswerCheckDto> answers, Long lessonId);
+
+    List<ListeningPassageDto> getListeningPassageByLessonId(Long lessonId);
 }
