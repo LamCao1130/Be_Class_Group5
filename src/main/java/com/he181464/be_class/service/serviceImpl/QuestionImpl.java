@@ -107,9 +107,9 @@ public class QuestionImpl implements QuestionService {
                 listeningPassage = questions.get(0).getListeningPassage();
                 questionCreateDto.setListeningPassageDto(listeningPassageMapper.
                         toListeningPassageDto(listeningPassage));
-                if(listeningPassage.getPassage_type().equalsIgnoreCase("long")){
+                if (listeningPassage.getPassage_type().equalsIgnoreCase("long")) {
 
-                    isLong=true;
+                    isLong = true;
                 } else {
                     isLong = false;
                 }
@@ -128,7 +128,7 @@ public class QuestionImpl implements QuestionService {
                 QuestionDto questionDto = questionMapper.toQuestionDto(question);
                 questionDto.setQuestionTypeId(questionType.getId());
                 if ((readingPassage != null) || questionType.getType().equalsIgnoreCase("mc")
-                        ||isLong) {
+                        || isLong) {
                     List<QuestionOption> questionOptions = questionOptionByQuestion.get(question.getId());
                     List<QuestionOptionDto> questionOptionDtos = questionOptions.stream().map(questionOption -> {
                         QuestionOptionDto questionOptionDto = questionOptionMapper.toQuestionOptionDto(questionOption);
@@ -136,7 +136,7 @@ public class QuestionImpl implements QuestionService {
                     }).toList();
                     questionDto.setOptions(questionOptionDtos);
                 }
-                if(!isLong&&questionType.getType().equalsIgnoreCase("listening")){
+                if (!isLong && questionType.getType().equalsIgnoreCase("listening")) {
                     ListeningPassageDto listeningPassageDto = listeningPassageMapper.toListeningPassageDto(question.getListeningPassage());
                 }
                 if (readingPassage != null) {
@@ -155,7 +155,7 @@ public class QuestionImpl implements QuestionService {
     @Override
     public void deleteQuestionByQuestionType(Integer id) {
         QuestionType questionType = questionTypeRepository.findById(id).
-                orElseThrow(()->new IllegalArgumentException("Khong tim thay questio type id"));
+                orElseThrow(() -> new IllegalArgumentException("Khong tim thay questio type id"));
 
         questionTypeRepository.deleteById(id);
 
@@ -171,7 +171,7 @@ public class QuestionImpl implements QuestionService {
         listeningPassageRepository.deleteById(id);
     }
 
-@Transactional
+    @Transactional
     @Override
     public QuestionCreateDto updateQuestion(QuestionCreateDto questionCreateDto) {
         QuestionTypeDto questionTypeDto = questionCreateDto.getQuestionTypeDto();
@@ -180,8 +180,8 @@ public class QuestionImpl implements QuestionService {
                 () -> new IllegalArgumentException("Khong tim thay id")
         ));
         savedQuestionType.setId(questionTypeDto.getQuestionTypeId());
-        ReadingPassage readingPassage =null;
-        ListeningPassage listeningPassage=null;
+        ReadingPassage readingPassage = null;
+        ListeningPassage listeningPassage = null;
         if (savedQuestionType.getType().equalsIgnoreCase("reading")) {
             readingPassage = readingMapper.toReadingPassageEntity(
                     questionCreateDto.getReadingDto());
@@ -290,41 +290,39 @@ public class QuestionImpl implements QuestionService {
     @Override
     public List<AnswerCheckedDto> checkAnswer(List<AnswerCheckDto> answers) {
         List<AnswerCheckedDto> resultFail = new ArrayList<>();
-        for( AnswerCheckDto answerCheckDto : answers){
+        for (AnswerCheckDto answerCheckDto : answers) {
             Questions question = questionRepository.findById(answerCheckDto.getQuestionId()).orElseThrow(
-                    ()-> new IllegalArgumentException("Khong tim thay cau hoi voi id la"+ answerCheckDto.getQuestionId())
+                    () -> new IllegalArgumentException("Khong tim thay cau hoi voi id la" + answerCheckDto.getQuestionId())
             );
-            if(question.getQuestionType().getType().equalsIgnoreCase("fill")){
-                if(!question.getCorrectAnswer().trim().equalsIgnoreCase(answerCheckDto.getTextAnswer().trim())){
+            if (question.getQuestionType().getType().equalsIgnoreCase("fill")) {
+                if (!question.getCorrectAnswer().trim().equalsIgnoreCase(answerCheckDto.getTextAnswer().trim())) {
                     AnswerCheckedDto answerCheckedDto = new AnswerCheckedDto();
                     answerCheckedDto.setQuestionId(question.getId());
                     answerCheckedDto.setQuestionText(question.getQuestionText());
                     answerCheckedDto.setTextTrueAnswer(question.getCorrectAnswer());
                     resultFail.add(answerCheckedDto);
                 }
-            }
-            else if(question.getQuestionType().getType().equalsIgnoreCase("mc") ){
+            } else if (question.getQuestionType().getType().equalsIgnoreCase("mc")) {
                 List<QuestionOption> correctOptions = question.getQuestionOptions().stream()
                         .filter(QuestionOption::getCorrectAnswer)
                         .toList();
-                int c=0;
-                for(Integer checkOption : answerCheckDto.getSelected()){
-                    for(QuestionOption option : correctOptions){
-                        if(option.getId().equals(checkOption)){
+                int c = 0;
+                for (Integer checkOption : answerCheckDto.getSelected()) {
+                    for (QuestionOption option : correctOptions) {
+                        if (option.getId().equals(checkOption)) {
                             c++;
                         }
                     }
                 }
-                if(c==correctOptions.size() && c== answerCheckDto.getSelected().size()) {
+                if (c == correctOptions.size() && c == answerCheckDto.getSelected().size()) {
                     continue;
-                }
-                else{
+                } else {
                     AnswerCheckedDto answerCheckedDto = new AnswerCheckedDto();
                     answerCheckedDto.setQuestionId(question.getId());
                     answerCheckedDto.setQuestionText(question.getQuestionText());
-                    String optionTrueAnswer ="";
-                    for(QuestionOption option : correctOptions){
-                        optionTrueAnswer += option.getOptionText()+"; ";
+                    String optionTrueAnswer = "";
+                    for (QuestionOption option : correctOptions) {
+                        optionTrueAnswer += option.getOptionText() + "; ";
                     }
                     answerCheckedDto.setTextTrueAnswer(optionTrueAnswer);
                     resultFail.add(answerCheckedDto);
@@ -333,6 +331,112 @@ public class QuestionImpl implements QuestionService {
 
         }
         return resultFail;
+    }
+
+    @Override
+    public List<AnswerCheckedDto> checkAnswerVocab(List<AnswerCheckDto> answers, Long lessonId) {
+        List<QuestionType> questionTypesFill = questionTypeRepository.findByLessonIdAndType(lessonId, "fill");
+        List<QuestionType> questionTypesMc = questionTypeRepository.findByLessonIdAndType(lessonId, "mc");
+        List<Questions> allQuestionTypes = new ArrayList<>();
+        List<AnswerCheckedDto> resultFail = new ArrayList<>();
+        for (QuestionType qt : questionTypesFill) {
+            allQuestionTypes.addAll(qt.getQuestions());
+        }
+        for (QuestionType qt : questionTypesMc) {
+            allQuestionTypes.addAll(qt.getQuestions());
+        }
+        for (Questions qt : allQuestionTypes) {
+            int checkEx = 0;
+            for (AnswerCheckDto answerCheckDto : answers) {
+                Questions question = questionRepository.findById(answerCheckDto.getQuestionId()).orElseThrow(
+                        () -> new IllegalArgumentException("Khong tim thay cau hoi voi id la" + answerCheckDto.getQuestionId())
+                );
+                if (question.getId() == qt.getId()) {
+                    ++checkEx;
+                    if (qt.getQuestionType().getType().equalsIgnoreCase("fill")) {
+                        if (!question.getCorrectAnswer().trim().equalsIgnoreCase(answerCheckDto.getTextAnswer().trim())) {
+                            AnswerCheckedDto answerCheckedDto = new AnswerCheckedDto();
+                            answerCheckedDto.setQuestionId(question.getId());
+                            answerCheckedDto.setQuestionText(question.getQuestionText());
+                            answerCheckedDto.setTextTrueAnswer(question.getCorrectAnswer());
+                            resultFail.add(answerCheckedDto);
+                        }
+                    } else if (qt.getQuestionType().getType().equalsIgnoreCase("mc")) {
+                        List<QuestionOption> correctOptions = question.getQuestionOptions().stream()
+                                .filter(QuestionOption::getCorrectAnswer)
+                                .toList();
+                        int c = 0;
+                        for (Integer checkOption : answerCheckDto.getSelected()) {
+                            for (QuestionOption option : correctOptions) {
+                                if (option.getId().equals(checkOption)) {
+                                    c++;
+                                }
+                            }
+                        }
+                        if (c == correctOptions.size() && c == answerCheckDto.getSelected().size()) {
+                            continue;
+                        } else {
+                            AnswerCheckedDto answerCheckedDto = new AnswerCheckedDto();
+                            answerCheckedDto.setQuestionId(question.getId());
+                            answerCheckedDto.setQuestionText(question.getQuestionText());
+                            String optionTrueAnswer = "";
+                            for (QuestionOption option : correctOptions) {
+                                optionTrueAnswer += option.getOptionText() + "; ";
+                            }
+                            answerCheckedDto.setTextTrueAnswer(optionTrueAnswer);
+                            resultFail.add(answerCheckedDto);
+                        }
+
+                    }
+                }
+
+            }
+            if(checkEx==0){
+                AnswerCheckedDto answerCheckedDto = new AnswerCheckedDto();
+                answerCheckedDto.setQuestionId(qt.getId());
+                answerCheckedDto.setQuestionText(qt.getQuestionText());
+                if(qt.getQuestionType().getType().equalsIgnoreCase("fill")){
+                    answerCheckedDto.setTextTrueAnswer(qt.getCorrectAnswer());
+                }else if(qt.getQuestionType().getType().equalsIgnoreCase("mc")){
+                    String optionTrueAnswer = "";
+                    List<QuestionOption> correctOptions = qt.getQuestionOptions().stream()
+                            .filter(QuestionOption::getCorrectAnswer)
+                            .toList();
+                    for (QuestionOption option : correctOptions) {
+                        optionTrueAnswer += option.getOptionText() + "; ";
+                    }
+                    answerCheckedDto.setTextTrueAnswer(optionTrueAnswer);
+                }
+                resultFail.add(answerCheckedDto);
+            }
+        }
+        return resultFail;
+    }
+
+    @Override
+    public List<ListeningPassageDto> getListeningPassageByLessonId(Long lessonId) {
+        List<ListeningPassage> listeningPassages = listeningPassageRepository.findByLessonId(lessonId);
+        List<ListeningPassageDto> listeningPassageDtos = listeningPassages.stream().map(p -> {
+                    ListeningPassageDto listeningPassageDto = listeningPassageMapper.toListeningPassageDto(p);
+                    List<Questions> questions = p.getQuestions();
+                    List<QuestionDto> questionDtos = questions.stream().map(question -> {
+                        QuestionDto questionDto = questionMapper.toQuestionDto(question);
+                        questionDto.setQuestionTypeId(question.getQuestionType().getId());
+                        List<QuestionOption> questionOptions = question.getQuestionOptions();
+                        if (questionOptions != null) {
+                            List<QuestionOptionDto> questionOptionDtos = questionOptions.stream().map(questionOption -> {
+                                QuestionOptionDto questionOptionDto = questionOptionMapper.toQuestionOptionDto(questionOption);
+                                return questionOptionDto;
+                            }).toList();
+                            questionDto.setOptions(questionOptionDtos);
+                        }
+                        return questionDto;
+                    }).toList();
+                    listeningPassageDto.setQuestions(questionDtos);
+                    return listeningPassageDto;
+                }
+        ).toList();
+        return listeningPassageDtos;
     }
 
 
