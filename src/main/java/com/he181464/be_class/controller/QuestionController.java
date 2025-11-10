@@ -60,8 +60,25 @@ public class QuestionController {
         return ResponseEntity.ok(questionService.checkAnswerVocab(answers, lessonId));
     }
 
+    @PostMapping("/check-answer-listening/{lessonId}" )
+    public ResponseEntity<?>checkAnswerListening(@RequestBody List<AnswerCheckDto> answers, @PathVariable Long lessonId){
+        return ResponseEntity.ok(questionService.checkAnswerListen(answers, lessonId));
+    }
+
+    @PostMapping("/check-answer-reading/{lessonId}" )
+    public ResponseEntity<?>checkAnswerReading(@RequestBody List<AnswerCheckDto> answers, @PathVariable Long lessonId){
+        return ResponseEntity.ok(questionService.checkAnswerReading(answers, lessonId));
+    }
+
     @GetMapping("/listening/{lessonId}")
     public ResponseEntity<?>getListeningPassageByLessonId(@PathVariable Long lessonId){
         return ResponseEntity.ok(questionService.getListeningPassageByLessonId(lessonId));
     }
+
+    @GetMapping("/reading/{lessonId}")
+    public ResponseEntity<?>getReadingPassageByLessonId(@PathVariable Long lessonId) {
+        return ResponseEntity.ok(questionService.getReadingPassageByLessonId(lessonId));
+    }
+
+
 }
