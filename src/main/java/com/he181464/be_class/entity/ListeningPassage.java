@@ -28,6 +28,9 @@ public class ListeningPassage {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "lesson_id", insertable = false, updatable = false)
+    private Integer lessonId;
+
     @Column(name = "title")
     private String title;
 

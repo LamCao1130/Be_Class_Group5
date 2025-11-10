@@ -55,9 +55,14 @@ public class QuestionController {
         return ResponseEntity.ok(questionService.getQuestionByQuestionTypeId(id));
     }
 
-    @PostMapping("/check-answer" )
-    public ResponseEntity<?>checkAnswer(@RequestBody List<AnswerCheckDto> answers){
-        return ResponseEntity.ok(questionService.checkAnswer(answers));
+    @PostMapping("/check-answer-vocab/{lessonId}" )
+    public ResponseEntity<?>checkAnswerVocab(@RequestBody List<AnswerCheckDto> answers, @PathVariable Long lessonId){
+        return ResponseEntity.ok(questionService.checkAnswerVocab(answers, lessonId));
+    }
+
+    @GetMapping("/listening/{lessonId}")
+    public ResponseEntity<?>getListeningPassageByLessonId(@PathVariable Long lessonId){
+        return ResponseEntity.ok(questionService.getListeningPassageByLessonId(lessonId));
     }
 
     @GetMapping("/history/{id}")
