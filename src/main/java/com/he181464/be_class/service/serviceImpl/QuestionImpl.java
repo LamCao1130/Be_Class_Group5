@@ -29,7 +29,10 @@ public class QuestionImpl implements QuestionService {
     private final ReadingMapper readingMapper;
     private final ListeningPassageRepository listeningPassageRepository;
     private final ListeningPassageMapper listeningPassageMapper;
-
+    private final SubmissionHistoryRepository submissionHistoryRepository;
+    private final SubmissionHistoryMapper submissionHistoryMapper;
+    private final QuestionAnswerRepository questionAnswerRepository;
+    private final QuestionAnswerMapper questionAnswerMapper;
     @Transactional
     @Override
     public QuestionCreateDto createListQuestion(QuestionCreateDto questionCreateDto) {
@@ -334,6 +337,26 @@ public class QuestionImpl implements QuestionService {
     }
 
     @Override
+    public List<SubmissionHistoryDto> getSubmissionHistoryByLesson(Long id) {
+        List<SubmissionHistory> submissionHistories = submissionHistoryRepository.findByLessonId(id);
+        List<SubmissionHistoryDto> submissionHistoryDtos= submissionHistories.stream().map(
+                submissionHistoryMapper::toSubmissionHistoryDto
+        ).toList();
+        return submissionHistoryDtos;
+    }
+
+    @Override
+    public List<QuestionAnswerDto> getQuestionAnswerFailBySubmissionHistory(Long id) {
+        List<QuestionAnswers> questionAnswers = questionAnswerRepository.getIncorrectOrUnscoredAnswers(id);
+        List<QuestionAnswerDto> questionAnswerDtos = questionAnswers.stream().map(
+                item -> {
+                    QuestionAnswerDto questionAnswerDto = questionAnswerMapper.toQuestionAnswerDto(item);
+                    questionAnswerDto.setSubmissionHistoryId(item.getSubmissionHistory().getId());
+                    return questionAnswerDto;
+                }
+        ).toList();
+        return questionAnswerDtos;
+    }
     public List<AnswerCheckedDto> checkAnswerVocab(List<AnswerCheckDto> answers, Long lessonId) {
         List<QuestionType> questionTypesFill = questionTypeRepository.findByLessonIdAndType(lessonId, "fill");
         List<QuestionType> questionTypesMc = questionTypeRepository.findByLessonIdAndType(lessonId, "mc");

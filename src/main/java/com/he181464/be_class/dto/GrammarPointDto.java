@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GrammarPointDto {
-    private int id;
+    private Integer id;
 
-    private int lessonId;
+    private Long lessonId;
 
     @NotBlank(message = "Tên ngữ pháp không được để trống")
     private String title;
