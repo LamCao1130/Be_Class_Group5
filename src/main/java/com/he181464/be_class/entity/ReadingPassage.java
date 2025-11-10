@@ -31,6 +31,9 @@ public class ReadingPassage {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "lesson_id", insertable = false, updatable = false)
+    private Integer lessonId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lesson_id", unique = true)
     private Lesson lesson;
