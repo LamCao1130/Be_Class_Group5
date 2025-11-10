@@ -27,12 +27,21 @@ public class SubmissionHistory {
     @Column(name = "submitted_at")
     private LocalDateTime submittedAt;
 
+    @Column(name = "answer_writing")
+    private String answerWriting;
+
+    @Column(name ="student_id")
+    private Long studentId;
+
+    @Column(name ="lesson_id")
+    private Long lessonId;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id", nullable = false)
+    @JoinColumn(name = "student_id",insertable = false, updatable = false)
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lesson_id")
+    @JoinColumn(name = "lesson_id",insertable = false, updatable = false)
     private Lesson lesson;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "submissionHistory", cascade = CascadeType.ALL, orphanRemoval = true)

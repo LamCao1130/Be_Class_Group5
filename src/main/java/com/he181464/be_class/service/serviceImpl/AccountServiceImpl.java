@@ -144,4 +144,11 @@ public class AccountServiceImpl implements AccountService {
     public List<AccountResponseDto> getAllAccount() {
         return accountRepository.findAll().stream().map(accountMapper::toDTO).toList();
     }
+
+    @Override
+    public Long getAccountIdByEmail(String email) {
+        Account account = accountRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Account not found"));
+        return account.getId();
+    }
 }

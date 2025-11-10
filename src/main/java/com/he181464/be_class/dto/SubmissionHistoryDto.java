@@ -1,5 +1,6 @@
 package com.he181464.be_class.dto;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,5 +15,8 @@ public class SubmissionHistoryDto {
     private String type;
     private Integer numberWrong;
     private LocalDateTime submittedAt;
+    private Long studentId;
+    private Long lessonId;
+    private String answerWriting;
 
 }
