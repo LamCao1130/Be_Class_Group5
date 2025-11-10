@@ -11,6 +11,6 @@ public class QuestionAnswerDto {
 
     private Integer id;
     private String userAnswer;
-    private Boolean result;
+    private String result;
     private Long SubmissionHistoryId;
 }
