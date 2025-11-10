@@ -28,19 +28,19 @@ public class Exam {
     private String description;
 
     @Column(name = "duration_minutes")
-    private int durationMinutes;
+    private Integer durationMinutes;
 
     @Column(name = "total_marks")
-    private int totalMarks;
+    private Integer totalMarks;
 
     @Column(name = "passing_score")
-    private int passingScore;
+    private Integer passingScore;
 
     @Column(name = "switch_tabs")
     private Integer switchTabs;
 
     @Column(name = "status", columnDefinition = "tinyint")
-    private int status;
+    private Integer status;
 
     @Column(name = "created_at", columnDefinition = "datetime")
     private Date createdAt;

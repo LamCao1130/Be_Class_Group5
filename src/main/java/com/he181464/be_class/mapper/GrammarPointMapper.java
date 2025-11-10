@@ -8,4 +8,6 @@ import org.mapstruct.Mapper;
 
 public interface GrammarPointMapper {
     GrammarPointDto toGrammarPointDto(GrammarPoint grammarPoint);
+
+    GrammarPoint toGrammarPointEntity(GrammarPointDto grammarPointDto);
 }
