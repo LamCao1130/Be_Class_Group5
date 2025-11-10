@@ -77,4 +77,7 @@ public class Account {
 
     @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
     private List<ExamAttempts> examAttempts;
+
+    @OneToMany(mappedBy = "account",fetch = FetchType.LAZY)
+    private List<SubmissionHistory>submissionHistories;
 }

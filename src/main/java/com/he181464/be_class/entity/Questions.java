@@ -53,4 +53,7 @@ public class Questions {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "listening_passage_id")
     private ListeningPassage listeningPassage;
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "questions",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<QuestionAnswers>questionAnswers;
 }
