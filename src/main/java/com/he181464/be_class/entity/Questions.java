@@ -16,7 +16,7 @@ import java.util.List;
 public class Questions {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "question_text", columnDefinition = "text")
     private String questionText;
@@ -28,13 +28,16 @@ public class Questions {
     private String explanation;
 
     @Column(name = "marks")
-    private int marks;
+    private Integer marks;
 
     @Column(name = "difficulty", columnDefinition = "varchar(10)")
     private String difficulty;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Column(name = "listening_text",columnDefinition = "text")
+    private String listeningText;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reading_passage_id")
@@ -44,6 +47,13 @@ public class Questions {
     @JoinColumn(name = "question_type_id")
     private QuestionType questionType;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "questions", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "questions", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<QuestionOption> questionOptions;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "listening_passage_id")
+    private ListeningPassage listeningPassage;
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "questions",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<QuestionAnswers>questionAnswers;
 }

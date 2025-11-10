@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ClassRoomRepository extends JpaRepository<ClassRoom, Long> {
@@ -19,6 +20,9 @@ public interface ClassRoomRepository extends JpaRepository<ClassRoom, Long> {
 
     @Query("select count(cl) from ClassRoom cl where cl.status = '1'")
     Integer countTotalActiveClassRoom();
+    ClassRoom findByCode(String code);
+
+    //List<Long> findByTeacherIdAndStatus(Long teacherId, String status);
 
     @Query("SELECT month(c.createdDate) as month, count(c) as total" +
             " from ClassRoom c " +

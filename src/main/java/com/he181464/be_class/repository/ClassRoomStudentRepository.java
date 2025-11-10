@@ -24,6 +24,7 @@ public interface ClassRoomStudentRepository extends JpaRepository<ClassRoomStude
     @Query("""
         SELECT new com.he181464.be_class.dto.ClassRoomStudentDTO(
             crs.studentId,
+                crs.classRoomId,
             cr.name,
             cr.title,
             t.fullName
@@ -37,4 +38,6 @@ public interface ClassRoomStudentRepository extends JpaRepository<ClassRoomStude
     Long countClassRoomStudentByStudentId(Long studentId);
 
     Page<ClassRoomStudent> findClassRoomStudentByStudentId(Long studentId, Pageable pageable);
+
+    ClassRoomStudent findByClassRoomIdAndStudentId(Long classRoomId, Long studentId);
 }

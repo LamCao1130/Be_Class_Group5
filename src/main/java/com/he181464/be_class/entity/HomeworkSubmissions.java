@@ -17,7 +17,7 @@ import java.util.Date;
 public class HomeworkSubmissions {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "submission_content", columnDefinition = "text")
     private String submissionContext;
@@ -47,10 +47,10 @@ public class HomeworkSubmissions {
     private LocalDateTime startedAt;
 
     @Column(name = "time_spent")
-    private int timeSpent;
+    private Integer timeSpent;
 
     @Column(name = "attempt_count")
-    private int attemptCount;
+    private Integer attemptCount;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

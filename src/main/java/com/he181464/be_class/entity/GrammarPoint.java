@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class GrammarPoint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "title", columnDefinition = "varchar(255)")
     private String title;

@@ -4,15 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class QuestionCreateDto {
-    private QuestionTypeDto questionTypeDto;
+public class QuestionAnswerDto {
 
-    private ReadingDto readingDto;
-
-    private ListeningPassageDto listeningPassageDto;
-
+    private Integer id;
+    private String userAnswer;
+    private String result;
+    private Long SubmissionHistoryId;
 }

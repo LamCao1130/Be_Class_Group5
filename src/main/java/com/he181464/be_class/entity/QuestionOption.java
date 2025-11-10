@@ -22,6 +22,9 @@ public class QuestionOption {
     @Column(name = "correct_answer")
     private Boolean correctAnswer;
 
+    @Column(name = "question_id", insertable = false, updatable = false)
+    private Integer questionId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
     private Questions questions;

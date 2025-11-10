@@ -4,15 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class QuestionCreateDto {
-    private QuestionTypeDto questionTypeDto;
+public class AnswerCheckDto {
 
-    private ReadingDto readingDto;
+    private Integer questionId;
 
-    private ListeningPassageDto listeningPassageDto;
+    private List<Integer> selected;
+
+    private String textAnswer;
 
 }
