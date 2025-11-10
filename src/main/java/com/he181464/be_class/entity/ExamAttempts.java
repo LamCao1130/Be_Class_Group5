@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -27,7 +28,7 @@ public class ExamAttempts {
     private Account student;
 
     @Column(name = "score", precision = 5, scale = 2)
-    private int score;
+    private Integer score;
 
     @Column(name = "time_spent")
     private Integer timeSpent;
@@ -40,4 +41,7 @@ public class ExamAttempts {
 
     @Column(name = "status", length = 20)
     private String status; //
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "examAttempts")
+    private List<QuestionAnswers>questionAnswers;
 }

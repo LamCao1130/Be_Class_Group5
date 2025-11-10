@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ClassRoomStudentDTO {
-    private long studentId;
-    private long classRoomId;
+    private Long studentId;
+    private Long classRoomId;
     private String name;
     private String title;
     private String teacherName;
