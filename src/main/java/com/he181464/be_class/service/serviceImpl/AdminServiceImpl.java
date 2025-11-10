@@ -19,10 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
@@ -136,7 +133,7 @@ public class AdminServiceImpl implements AdminService {
         List<ClassRoom> classRoom = classRoomRepository.findByTeacherIdAndStatus(accountId,AppConstant.STATUS_ACTIVE);
 
         List<Long> classIds = classRoom.stream().map(ClassRoom::getId).toList();
-        List<Object[]> studentCount = classRoomStudentRepository.countStudentByClassRoomId(classIds);
+        List<Object[]> studentCount = classRoomStudentRepository.countStudentByListClassRoomId(classIds);
         Map<Long,Integer> studentCountMap = studentCount.stream().collect(Collectors.toMap(
                 array -> (Long) array[0],
                 array -> ((Long) array[1]).intValue()
@@ -166,6 +163,8 @@ public class AdminServiceImpl implements AdminService {
         return accountResponseDto;
     }
 
+
+
     @Override
     public AccountResponseDto editAccount(Long accountId, AccountDto accountDto) {
         Account account = accountRepository.findById(accountId)
@@ -191,9 +190,119 @@ public class AdminServiceImpl implements AdminService {
 
 
     @Override
-    public ClassRoomResponseDto getAllClassRoom() {
-
-        return null;
+    public Page<ClassRoomResponseDto> getAllClassRoom(int page,int size) {
+        Pageable pageable = PageRequest.of(page,size,Sort.by("id").ascending());
+        Page<ClassRoom> classRooms = classRoomRepository.findAll(pageable);
+        List<Object[]> studentCount = classRoomStudentRepository.countStudentByListClassRoomId(classRooms.stream().map(ClassRoom::getId).toList());
+        Map<Long,Integer> countStudentByClassRoom = studentCount.stream().collect(Collectors.toMap(
+                array -> (Long) array[0],
+                array -> ((Long) array[1]).intValue()
+        ));
+        return classRooms.map(cr -> {
+           ClassRoomResponseDto dto = classRoomMapper.toDTO(cr);
+           Integer studentCounts = countStudentByClassRoom.getOrDefault(cr.getId(),0);
+           dto.setStudentCount(studentCounts);
+           return dto;
+        });
     }
 
+    @Override
+    public ClassRoomResponseDto createClassRoom(ClassRoomDto classRoomDto) {
+        ClassRoom classRoom = classRoomMapper.toEntity(classRoomDto);
+        String code;
+        do {
+            code = generateCode();
+        } while (classRoomRepository.existsByCode(code));
+
+        Account account = accountRepository.findById(classRoomDto.getTeacherId())
+                        .orElseThrow(() -> new NoSuchElementException("khong tim thay account id"));
+        classRoom.setTeacher(account);
+        classRoom.setCode(code);
+        classRoom.setCreatedDate(LocalDateTime.now());
+        classRoomRepository.save(classRoom);
+        ClassRoomResponseDto dto = classRoomMapper.toDTO(classRoom);
+        dto.setStudentCount(0);
+
+        return dto;
+    }
+
+    @Override
+    public ClassRoomResponseDto editClassRoom(ClassRoomDto classRoomDto, Long classRoomId) {
+        ClassRoom classRoom = classRoomRepository.findById(classRoomId)
+                .orElseThrow(() -> new NoSuchElementException("Khong tim thay classroom"));
+        classRoomMapper.updateEntityFromDto(classRoom,classRoomDto);
+        Integer studentCount = classRoomStudentRepository.countStudentByClassRoomId(classRoomId);
+        log.info(studentCount.toString());
+        Account account = accountRepository.findById(classRoomDto.getTeacherId())
+                .orElseThrow(() -> new NoSuchElementException("khong tim thay account id"));
+        classRoom.setTeacher(account);
+
+        classRoomRepository.save(classRoom);
+        ClassRoomResponseDto dto = classRoomMapper.toDTO(classRoom);
+        dto.setStudentCount(studentCount);
+        return dto;
+
+    }
+
+    @Override
+    public ClassRoomResponseDto deleteClassRoom(Long classRoomId) {
+        ClassRoom classRoom = classRoomRepository.findById(classRoomId)
+                .orElseThrow(() -> new NoSuchElementException("Khong tim thay class"));
+        Integer countStudent = classRoomStudentRepository.countStudentByClassRoomId(classRoomId);
+        if(countStudent > 0){
+            throw new IllegalStateException("Class have students. Can not deactivate");
+        }
+        classRoom.setStatus(AppConstant.STATUS_INACTIVE);
+        classRoomRepository.save(classRoom);
+        return classRoomMapper.toDTO(classRoom);
+    }
+
+    @Override
+    public ClassRoomResponseDto restoreClassRoom(Long classRoomId) {
+        ClassRoom classRoom = classRoomRepository.findById(classRoomId)
+                .orElseThrow(() -> new NoSuchElementException("Khong tim thay class"));
+        classRoom.setStatus(AppConstant.STATUS_ACTIVE);
+        classRoomRepository.save(classRoom);
+        ClassRoomResponseDto dto = classRoomMapper.toDTO(classRoom);
+        dto.setStudentCount(0);
+        return dto;
+    }
+
+    @Override
+    public ClassRoomResponseDto classDetail(Long classRoomId) {
+        ClassRoom classRoom = classRoomRepository.findById(classRoomId)
+                .orElseThrow(() -> new NoSuchElementException("Không tìm thấy class ID: " + classRoomId));
+
+        ClassRoomResponseDto dto = classRoomMapper.toDTO(classRoom);
+        List<ClassRoomStudent> classRoomStudents = classRoomStudentRepository.findByClassRoomId(classRoomId);
+        List<Long> studentIds = classRoomStudents.stream()
+                .map(ClassRoomStudent::getStudentId)
+                .toList();
+
+        List<Account> students = accountRepository.findAllById(studentIds);
+        List<AccountResponseDto> studentDtos = students.stream()
+                .map(accountMapper::toDTO)
+                .toList();
+        dto.setStudents(studentDtos);
+        dto.setStudentCount(studentDtos.size());
+
+        List<LessonDto> lessons = lessonRepository.findAllByClassRoomId(classRoomId)
+                .stream()
+                .map(lessonMapper::toLessonDto)
+                .toList();
+        dto.setLessons(lessons);
+
+        List<ExamDto> exams = examRepository.findAllByClassRoomId(classRoomId)
+                .stream()
+                .map(examMapper::toDTO)
+                .toList();
+        dto.setExams(exams);
+
+        return dto;
+    }
+
+    private String generateCode() {
+        String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+        return uuid.substring(0, 8).toUpperCase(); // VD: "A9F3D1B2"
+    }
 }
