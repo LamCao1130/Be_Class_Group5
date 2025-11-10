@@ -14,5 +14,8 @@ public class SubmissionHistoryDto {
     private String type;
     private Integer numberWrong;
     private LocalDateTime submittedAt;
+    private Long studentId;
+    private Long lessonId;
+    private String answerWriting;
 
 }
