@@ -347,15 +347,16 @@ public class QuestionImpl implements QuestionService {
 
     @Override
     public List<QuestionAnswerDto> getQuestionAnswerFailBySubmissionHistory(Long id) {
-        List<QuestionAnswers> questionAnswers = questionAnswerRepository.findByQuestionAnswerNotTrueBySubmission(id);
+        List<QuestionAnswers> questionAnswers = questionAnswerRepository.getIncorrectOrUnscoredAnswers(id);
         List<QuestionAnswerDto> questionAnswerDtos = questionAnswers.stream().map(
-                item ->{
+                item -> {
                     QuestionAnswerDto questionAnswerDto = questionAnswerMapper.toQuestionAnswerDto(item);
                     questionAnswerDto.setSubmissionHistoryId(item.getSubmissionHistory().getId());
                     return questionAnswerDto;
                 }
         ).toList();
         return questionAnswerDtos;
+    }
     public List<AnswerCheckedDto> checkAnswerVocab(List<AnswerCheckDto> answers, Long lessonId) {
         List<QuestionType> questionTypesFill = questionTypeRepository.findByLessonIdAndType(lessonId, "fill");
         List<QuestionType> questionTypesMc = questionTypeRepository.findByLessonIdAndType(lessonId, "mc");

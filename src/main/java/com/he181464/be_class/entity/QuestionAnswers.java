@@ -20,7 +20,7 @@ public class QuestionAnswers {
     private String userAnswer;
 
     @Column(name = "is_correct")
-    private Boolean result;
+    private String result;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
