@@ -64,4 +64,14 @@ public class QuestionController {
     public ResponseEntity<?>getListeningPassageByLessonId(@PathVariable Long lessonId){
         return ResponseEntity.ok(questionService.getListeningPassageByLessonId(lessonId));
     }
+
+    @GetMapping("/history/{id}")
+    public ResponseEntity<?>getSubmissionHistoryByLesson(@PathVariable Long id){
+        return ResponseEntity.ok(questionService.getSubmissionHistoryByLesson(id));
+    }
+
+    @GetMapping("/result/fail/{id}")
+    private ResponseEntity<?>getQuestionAnswerFailBySubmission(@PathVariable Long id){
+        return ResponseEntity.ok(questionService.getQuestionAnswerFailBySubmissionHistory(id));
+    }
 }
