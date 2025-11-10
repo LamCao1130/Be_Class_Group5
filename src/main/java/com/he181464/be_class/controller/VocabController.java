@@ -13,38 +13,38 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @Controller
-@RequestMapping("/api/v1/public/vocab/")
+@RequestMapping("/api/v1/vocab/")
 @RequiredArgsConstructor
 
 public class VocabController {
     private final VocabService vocabService;
 
-    @PostMapping("create")
+    @PostMapping("/create")
     public ResponseEntity<?> createVocab(@Valid @RequestBody List<VocabularyDto> vocabularyCreateDto) {
         vocabularyCreateDto.stream().forEach(voc -> voc.setId(null));
         return ResponseEntity.ok(vocabService.createListVocabulary(vocabularyCreateDto));
     }
 
-    @GetMapping("lesson/{id}")
+    @GetMapping("/lesson/{id}")
     public ResponseEntity<?> getVocabById(@PathVariable("id") Long lessonId) {
         List<VocabularyDto> vocabularies = vocabService.getVocabulariesByLesson(lessonId);
         return ResponseEntity.ok(vocabularies);
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteVocab(@PathVariable("id") Long vocabId) {
         vocabService.deleteVocabulary(vocabId);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("import")
+    @PostMapping("/import")
     public ResponseEntity<?> importVocab(@RequestParam("file") MultipartFile file,
                                          @RequestParam("lessonId") Long lessonId) {
         vocabService.importVocabFromExcelFile(file, lessonId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PutMapping("update")
+    @PutMapping("/update")
     public ResponseEntity<?> updateVocab(@RequestBody VocabularyDto vocabularyDto) {
         return ResponseEntity.ok(vocabService.editVocab(vocabularyDto));
     }

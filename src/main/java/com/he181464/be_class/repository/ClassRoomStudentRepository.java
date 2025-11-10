@@ -7,7 +7,8 @@ import org.springframework.data.repository.query.Param;
 import com.he181464.be_class.dto.ClassRoomStudentDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ public interface ClassRoomStudentRepository extends JpaRepository<ClassRoomStude
     @Query("""
         SELECT new com.he181464.be_class.dto.ClassRoomStudentDTO(
             crs.studentId,
+                crs.classRoomId,
             cr.name,
             cr.title,
             t.fullName
@@ -39,4 +41,6 @@ public interface ClassRoomStudentRepository extends JpaRepository<ClassRoomStude
     Page<ClassRoomStudentDTO> findClassRoomByStudentId(long studentId, Pageable pageable);
 
     List<ClassRoomStudent> findByClassRoomId(Long classRoomId);
+
+    ClassRoomStudent findByClassRoomIdAndStudentId(Long classRoomId, Long studentId);
 }

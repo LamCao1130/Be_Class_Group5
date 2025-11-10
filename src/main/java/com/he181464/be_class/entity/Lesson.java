@@ -69,4 +69,10 @@ public class Lesson {
 
     @OneToMany(mappedBy = "lesson", fetch = FetchType.LAZY)
     private List<QuestionType> questionTypes;
+
+    @OneToMany(mappedBy = "lesson",fetch = FetchType.LAZY)
+    private List<ListeningPassage> listeningPassages;
+
+    @OneToMany(mappedBy = "lesson",fetch = FetchType.LAZY)
+    private List<SubmissionHistory> submissionHistories;
 }

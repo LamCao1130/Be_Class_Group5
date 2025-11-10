@@ -10,12 +10,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -23,25 +23,46 @@ import java.util.Optional;
 @RequestMapping("/api/v1/class-rooms-student/student")
 @RequiredArgsConstructor
 public class ClassRoomStudentController {
-    @Autowired
+
     private final ClassRoomStudentDTOService classRoomStudentDTOService;
-    @Autowired
+
     private final AccountRepository accountRepository;
 
-    @GetMapping("/classroom")
-    public ResponseEntity<Page<ClassRoomStudentDTO>> getClassRoomStudentsByStudentId(Authentication authentication, @RequestParam int page, @RequestParam int size) {
 
-        if(authentication==null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).build();
-        }
-        UserDetails userDetails=(UserDetails) authentication.getPrincipal();
-        String email=userDetails.getUsername();
+    @GetMapping("/classroom")
+    public ResponseEntity<Page<ClassRoomStudentDTO>> getClassRoomStudentsByStudentId(@RequestParam int page, @RequestParam int size) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        String email = userDetails.getUsername();
         Optional<Account> optionalAccount = accountRepository.findByEmail(email);
-        if(optionalAccount.isEmpty()) {
+        if (optionalAccount.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        Account account=optionalAccount.get();
-        Page<ClassRoomStudentDTO> classRoom=classRoomStudentDTOService.getClassRoomStudentsByStudentId(account.getId(),page,size);
+        Account account = optionalAccount.get();
+        Page<ClassRoomStudentDTO> classRoom = classRoomStudentDTOService.getClassRoomStudentsByStudentId(account.getId(), page, size);
         return ResponseEntity.ok(classRoom);
     }
+
+    @PostMapping("/join/{code}")
+    @PreAuthorize("hasAnyAuthority('STUDENT')")
+    public ResponseEntity<?> joinClassRoomByCode(@PathVariable String code) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String email = userDetails.getUsername();
+        Optional<Account> optionalAccount = accountRepository.findByEmail(email);
+        if (optionalAccount.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Account account = optionalAccount.get();
+        try {
+            ClassRoomStudentDTO classRoomStudentDTO = classRoomStudentDTOService.joinClassRoomByCode(account.getId(), code);
+            return ResponseEntity.ok(classRoomStudentDTO);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import java.util.List;
 public class ReadingPassage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "title", columnDefinition = "varchar(255)")
     private String title;
@@ -28,12 +29,15 @@ public class ReadingPassage {
     private String difficulty;
 
     @Column(name = "created_at")
-    private Date createdAt;
+    private LocalDateTime createdAt;
+
+    @Column(name = "lesson_id", insertable = false, updatable = false)
+    private Integer lessonId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lesson_id", unique = true)
     private Lesson lesson;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "readingPassage")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "readingPassage", cascade = CascadeType.ALL)
     private List<Questions> questions;
 }

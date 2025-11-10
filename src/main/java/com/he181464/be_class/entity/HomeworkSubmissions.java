@@ -15,7 +15,7 @@ import java.util.Date;
 public class HomeworkSubmissions {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name = "submission_context", columnDefinition = "text")
     private String submissionContext;
@@ -36,7 +36,7 @@ public class HomeworkSubmissions {
     private String teacherFeedback;
 
     @Column(name = "grader_by")
-    private int gradedBy;
+    private Integer gradedBy;
 
     @Column(name = "graded_at")
     private Date gradedAt;
@@ -45,10 +45,10 @@ public class HomeworkSubmissions {
     private Date startedAt;
 
     @Column(name = "time_spent")
-    private int timeSpent;
+    private Integer timeSpent;
 
     @Column(name = "attempt_count")
-    private int attemptCount;
+    private Integer attemptCount;
 
     @Column(name = "created_at")
     private Date createdAt;

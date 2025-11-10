@@ -39,4 +39,11 @@ public class LessonServiceImpl implements LessonService {
         List<Lesson> lessons = lessonRepository.findByClassRoomId(classRoomId);
         return lessons.stream().map(lessonMapper::toLessonDto).toList();
     }
+
+    @Override
+    public LessonDto getLessonDetailById(Long lessonId) {
+        Lesson lesson = lessonRepository.findById(lessonId)
+                .orElseThrow(() -> new IllegalArgumentException("Lesson not found with id: " + lessonId));
+        return lessonMapper.toLessonDto(lesson);
+    }
 }
