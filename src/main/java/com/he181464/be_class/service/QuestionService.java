@@ -1,5 +1,7 @@
 package com.he181464.be_class.service;
 
+import com.beust.ah.A;
+import com.he181464.be_class.dto.*;
 import com.he181464.be_class.dto.*;
 import com.he181464.be_class.dto.AnswerCheckDto;
 import com.he181464.be_class.dto.AnswerCheckedDto;
@@ -30,5 +32,13 @@ public interface QuestionService {
     List<QuestionAnswerDto> getQuestionAnswerFailBySubmissionHistory(Long id);
     List<AnswerCheckedDto> checkAnswerVocab(List<AnswerCheckDto> answers, Long lessonId);
 
+    List<AnswerCheckedDto> checkAnswerListen(List<AnswerCheckDto> answers, Long lessonId);
+
+    List<AnswerCheckedDto> checkAnswerReading(List<AnswerCheckDto> answers, Long lessonId);
+
     List<ListeningPassageDto> getListeningPassageByLessonId(Long lessonId);
+
+    List<ReadingDto> getReadingPassageByLessonId(Long lessonId);
+
+
 }
