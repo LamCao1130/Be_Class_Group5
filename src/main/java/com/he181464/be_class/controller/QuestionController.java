@@ -59,4 +59,14 @@ public class QuestionController {
     public ResponseEntity<?>checkAnswer(@RequestBody List<AnswerCheckDto> answers){
         return ResponseEntity.ok(questionService.checkAnswer(answers));
     }
+
+    @GetMapping("/history/{id}")
+    public ResponseEntity<?>getSubmissionHistoryByLesson(@PathVariable Long id){
+        return ResponseEntity.ok(questionService.getSubmissionHistoryByLesson(id));
+    }
+
+    @GetMapping("/result/fail/{id}")
+    private ResponseEntity<?>getQuestionAnswerFailBySubmission(@PathVariable Long id){
+        return ResponseEntity.ok(questionService.getQuestionAnswerFailBySubmissionHistory(id));
+    }
 }
