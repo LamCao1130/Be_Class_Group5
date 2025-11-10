@@ -109,6 +109,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public Long getAccountIdByEmail(String email) {
+        Account account = accountRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Account not found"));
+        return account.getId();
+    }
+
+    @Override
     @Transactional
     public AccountDto updateAccount(AccountDto accountDto, long accountId) {
         Account account=accountRepository.findById(accountId).orElseThrow(() -> new IllegalArgumentException("Account not found"));
