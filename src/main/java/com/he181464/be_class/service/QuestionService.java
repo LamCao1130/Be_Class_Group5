@@ -30,6 +30,7 @@ public interface QuestionService {
     List<SubmissionHistoryDto> getSubmissionHistoryByLesson(Long id);
 
     List<QuestionAnswerDto> getQuestionAnswerFailBySubmissionHistory(Long id);
+
     List<AnswerCheckedDto> checkAnswerVocab(List<AnswerCheckDto> answers, Long lessonId);
 
     List<AnswerCheckedDto> checkAnswerListen(List<AnswerCheckDto> answers, Long lessonId);

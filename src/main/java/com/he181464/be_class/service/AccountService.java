@@ -31,5 +31,7 @@ public interface AccountService {
     boolean passwordMatches(String rawPassword, String encodedPassword);
     void changePassword(Account account,String newPassword);
 
+    void resetPassword(String email, String newPassword);
+
 
 }

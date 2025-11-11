@@ -1,5 +1,6 @@
 package com.he181464.be_class.service.serviceImpl;
 
+import com.he181464.be_class.dto.VocabularyDemoExportDTO;
 import com.he181464.be_class.dto.VocabularyDto;
 import com.he181464.be_class.entity.Lesson;
 import com.he181464.be_class.entity.Vocabulary;
@@ -8,6 +9,8 @@ import com.he181464.be_class.repository.LessonRepository;
 import com.he181464.be_class.repository.VocabRepository;
 import com.he181464.be_class.service.VocabService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
 
@@ -102,6 +106,47 @@ public class VocabServiceImpl implements VocabService {
 
         } catch (Exception e) {
             throw new RuntimeException("Error reading Excel file: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public ByteArrayInputStream exportExcelSample() {
+        try (Workbook workbook = new XSSFWorkbook();
+             ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+
+            Sheet sheet = workbook.createSheet("Vocabulary");
+
+            // Tạo header
+            Row headerRow = sheet.createRow(0);
+            String[] columns = {"Từ mới", "Cách phát âm", "Nghĩa", "Loại từ", "Ví dụ"};
+            for (int i = 0; i < columns.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(columns[i]);
+            }
+
+
+            List<VocabularyDemoExportDTO> list = List.of(
+                    new VocabularyDemoExportDTO("apple", "/ˈæp.əl/", "quả táo", "noun", "I eat an apple every day."),
+                    new VocabularyDemoExportDTO("run", "/rʌn/", "chạy", "verb", "He runs very fast.")
+            );
+
+            int rowIdx = 1;
+            for (VocabularyDemoExportDTO v : list) {
+                Row row = sheet.createRow(rowIdx++);
+
+                row.createCell(0).setCellValue(v.getWord());
+                row.createCell(1).setCellValue(v.getPronunciation());
+                row.createCell(2).setCellValue(v.getMeaning());
+                row.createCell(3).setCellValue(v.getType());
+                row.createCell(4).setCellValue(v.getExample());
+            }
+
+            workbook.write(out);
+            return new ByteArrayInputStream(out.toByteArray());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error exporting excel", e);
         }
     }
 

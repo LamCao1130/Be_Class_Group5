@@ -3,6 +3,7 @@ package com.he181464.be_class.service;
 import com.he181464.be_class.dto.VocabularyDto;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 public interface VocabService {
@@ -17,4 +18,6 @@ public interface VocabService {
     List<VocabularyDto> getVocabulariesByLesson(Long id);
 
     List<VocabularyDto> importVocabFromExcelFile(MultipartFile file, Long lessonId);
+
+    ByteArrayInputStream exportExcelSample();
 }

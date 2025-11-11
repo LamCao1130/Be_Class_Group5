@@ -394,6 +394,8 @@ public class QuestionImpl implements QuestionService {
         ).toList();
         return questionAnswerDtos;
     }
+
+    @Override
     public List<AnswerCheckedDto> checkAnswerVocab(List<AnswerCheckDto> answers, Long lessonId) {
         List<QuestionType> questionTypesFill = questionTypeRepository.findByLessonIdAndType(lessonId, "fill");
         List<QuestionType> questionTypesMc = questionTypeRepository.findByLessonIdAndType(lessonId, "mc");
