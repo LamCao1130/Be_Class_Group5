@@ -34,17 +34,9 @@ public class Lesson {
     @Column(name = "status")
     private Integer status;
 
-    @Column(name = "has_homework")
-    private Integer hasHomework;
-
-    @Column(name = "homework_instructions", columnDefinition = "TEXT")
-    private String homeworkInstructions;
 
     @Column(name = "homework_deadline")
     private LocalDateTime homeworkDeadline;
-
-    @Column(name = "homework_max_score")
-    private Integer homeworkMaxScore;
 
     @Column(name = "homework_attachment_url", length = 500)
     private String homeworkAttachmentUrl;

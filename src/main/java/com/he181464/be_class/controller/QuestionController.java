@@ -169,4 +169,14 @@ public class QuestionController {
 //        String response = openAIService.ask(question.getQuestion());
 //        return ResponseEntity.ok(response);
 //    }
+
+    @GetMapping("/{id}/submissionHistory")
+    public ResponseEntity<?>getSubmissionHistory(@PathVariable Long id){
+        return ResponseEntity.ok(questionService.getStatusOfSubmission(id));
+    }
+
+    @GetMapping("/exam/manage/{id}")
+    public ResponseEntity<?> getQuestionByExam(@PathVariable Integer id){
+        return ResponseEntity.ok(questionService.getListQuestionByExam(id));
+    }
 }

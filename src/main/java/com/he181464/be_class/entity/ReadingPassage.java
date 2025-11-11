@@ -40,4 +40,8 @@ public class ReadingPassage {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "readingPassage", cascade = CascadeType.ALL)
     private List<Questions> questions;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "exam_id")
+    private Exam exam;
 }

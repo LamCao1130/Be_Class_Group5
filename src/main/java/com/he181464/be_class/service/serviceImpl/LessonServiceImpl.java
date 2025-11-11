@@ -25,6 +25,7 @@ public class LessonServiceImpl implements LessonService {
     public LessonDto createLesson(LessonDto lessonDto) {
         Lesson lesson = lessonMapper.toLessonEntity(lessonDto);
         lesson.setCreatedAt(LocalDateTime.now());
+        lesson.setStatus(1);
         lesson = lessonRepository.save(lesson);
         return lessonMapper.toLessonDto(lesson);
     }

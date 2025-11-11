@@ -40,4 +40,6 @@ public interface ClassRoomStudentRepository extends JpaRepository<ClassRoomStude
     Page<ClassRoomStudent> findClassRoomStudentByStudentId(Long studentId, Pageable pageable);
 
     ClassRoomStudent findByClassRoomIdAndStudentId(Long classRoomId, Long studentId);
+
+    List<ClassRoomStudent> findByClassRoomId(Long classRoomId);
 }
