@@ -70,7 +70,7 @@ public class AdminServiceImpl implements AdminService {
             throw new DuplicateKeyException("Phone number already exist");
         }
         Account account = accountMapper.toEntity(accountDto);
-        account.setPassword(passwordEncoder.encode(accountDto.getFullName() + "123"));
+        account.setPassword(passwordEncoder.encode(accountDto.getPhoneNumber()));
         account.setCreatedAt(LocalDateTime.now());
         account.setUpdatedAt(null);
         Role role = roleRepository.findById(accountDto.getRoleId())
