@@ -30,5 +30,6 @@ public interface AccountMapper {
     @Mapping(target = "updatedAt",ignore = true)
     @Mapping(target = "role",ignore = true)
     @Mapping(target = "roleId",ignore = true)
+    @Mapping(target = "status",ignore = true)
     void updateEntityFromDTO(AccountDto accountDto, @MappingTarget Account account);
 }

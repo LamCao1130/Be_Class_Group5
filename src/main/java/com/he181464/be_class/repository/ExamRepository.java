@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,6 +16,8 @@ public interface ExamRepository extends JpaRepository<Exam,Integer> {
             "where cr.teacherId = :teacherId")
     List<Exam> findAllByTeacherId(@Param("teacherId") Long teacherId);
     List<Exam> findByClassRoomId( Long classRoomId);
+
+    List<Exam> findAllByClassRoomId(Long classRoomId);
 
     @Query("select e from Exam e " +
             "where e.examDate >= CURRENT_DATE and " +

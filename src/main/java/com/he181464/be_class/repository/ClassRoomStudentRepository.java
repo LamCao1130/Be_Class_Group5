@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import com.he181464.be_class.dto.ClassRoomStudentDTO;
-import com.he181464.be_class.entity.ClassRoomStudent;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
@@ -20,7 +19,13 @@ public interface ClassRoomStudentRepository extends JpaRepository<ClassRoomStude
             "from ClassRoomStudent crs " +
             "where crs.classRoomId IN :classRoomIds " +
             "GROUP BY crs.classRoomId")
-    List<Object[]> countStudentByClassRoomId(@Param("classRoomIds") List<Long> classRoomIds);
+    List<Object[]> countStudentByListClassRoomId(@Param("classRoomIds") List<Long> classRoomIds);
+
+    @Query("select count(crt.studentId) " +
+            "from ClassRoomStudent crt " +
+            "where crt.classRoomId = :classRoomId ")
+    Integer countStudentByClassRoomId(@Param("classRoomId") Long classRoomId);
+
     @Query("""
         SELECT new com.he181464.be_class.dto.ClassRoomStudentDTO(
             crs.studentId,
@@ -38,6 +43,7 @@ public interface ClassRoomStudentRepository extends JpaRepository<ClassRoomStude
     Long countClassRoomStudentByStudentId(Long studentId);
 
     Page<ClassRoomStudent> findClassRoomStudentByStudentId(Long studentId, Pageable pageable);
+
 
     ClassRoomStudent findByClassRoomIdAndStudentId(Long classRoomId, Long studentId);
 
