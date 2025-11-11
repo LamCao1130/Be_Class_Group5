@@ -34,4 +34,8 @@ public interface QuestionRepository extends JpaRepository<Questions, Integer> {
     @Query("SELECT qo FROM QuestionOption qo " +
             "WHERE qo.questions.questionType.exam.id = :examId")
     List<QuestionOption> findQuestionOptionByExamId(@Param("examId") Integer id);
+
+    @Query("SELECT qo FROM QuestionOption qo " +
+            "WHERE qo.questions.questionType.exam.id = :examId AND qo.correctAnswer = true")
+    List<QuestionOption> findQuestionOptionCorrectByExam(@Param("examId") Integer examId);
 }

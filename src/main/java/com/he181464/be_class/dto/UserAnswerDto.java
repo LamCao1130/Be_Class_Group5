@@ -6,18 +6,18 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExamAttemptsDTO {
-    private int id;
-    private int examId;
-    private String examTitle;
-    private BigDecimal score;
+public class UserAnswerDto {
+    private Map<Integer, List<Integer>>answers;
+    private Integer examId;
     private Integer timeSpent;
     private LocalDateTime startedAt;
     private LocalDateTime submittedAt;
-    private String status;
-    private String email;
+    private Long studentId;
+
 }

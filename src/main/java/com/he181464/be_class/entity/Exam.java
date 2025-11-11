@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -43,10 +44,13 @@ public class Exam {
     private Integer status;
 
     @Column(name = "created_at", columnDefinition = "datetime")
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "exam_date", columnDefinition = "datetime")
-    private Date examDate;
+    private LocalDateTime examDate;
+
+    @Column(name = "exam_date_end",columnDefinition = "datetime")
+    private LocalDateTime examDateEnd;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by")
