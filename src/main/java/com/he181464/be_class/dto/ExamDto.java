@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -21,8 +22,9 @@ public class ExamDto {
     private Integer passingScore;
     private Integer switchTabs;
     private Integer status;
-    private Date createdAt;
-    private Date examDate;
+    private LocalDateTime createdAt;
+    private LocalDateTime examDate;
+    private LocalDateTime examDateEnd;
 
     private Long createdBy;
     private String creatorName;

@@ -706,6 +706,7 @@ public class QuestionImpl implements QuestionService {
                 homeWorkStatusDto.setSubmittedAt(submissionHistory.getSubmittedAt());
                 homeWorkStatusDto.setNumberWrong(submissionHistory.getNumberWrong());
                 homeWorkStatusDto.setStudentName(studentName);
+                homeWorkStatusDto.setAnswerText(submissionHistory.getAnswerWriting());
                 homeWorkStatusDto.setType(submissionHistory.getType());
                 types.remove(submissionHistory.getType());
                 homeWorkStatusDtos.add(homeWorkStatusDto);

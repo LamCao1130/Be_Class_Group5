@@ -20,4 +20,6 @@ public class HomeWorkStatusDto {
     private LocalDateTime submittedAt;
 
     private String type;
+
+    private String answerText;
 }

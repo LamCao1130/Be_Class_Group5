@@ -16,5 +16,7 @@ public interface ExamAttemptsRepository extends JpaRepository<ExamAttempts, Inte
     @Query("SELECT ea FROM ExamAttempts ea WHERE ea.student.id = :studentId")
     Page<ExamAttempts> findExamAttemptsByStudentId(@Param("studentId") Long studentId, Pageable pageable);
 
+    @Query("SELECT ea FROM ExamAttempts ea WHERE ea.exam.classRoom.id = :classroomId")
+    List<ExamAttempts> findExamAttemptsByClassroomId(@Param("classroomId")Long classroomId);
 
 }
