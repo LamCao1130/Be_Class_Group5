@@ -6,4 +6,10 @@ import java.util.List;
 
 public interface ExamService {
     List<ExamDto> getExamsByClassId(Long classId);
+
+    ExamDto createExam(ExamDto examDto);
+
+    ExamDto getExam(Integer id);
+
+    List<ExamDto> getClassroomComingExam(Long id);
 }
