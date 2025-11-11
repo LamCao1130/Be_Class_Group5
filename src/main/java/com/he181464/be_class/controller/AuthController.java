@@ -2,6 +2,7 @@ package com.he181464.be_class.controller;
 
 import com.he181464.be_class.constant.AppConstant;
 import com.he181464.be_class.dto.*;
+import com.he181464.be_class.emailService.EmailService;
 import com.he181464.be_class.entity.Account;
 import com.he181464.be_class.jwt.JwtService;
 import com.he181464.be_class.model.response.AuthResponse;
@@ -33,6 +34,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class AuthController {
+
+    private final EmailService emailService;
 
     private final AuthenticationManager authenticationManager;
 
@@ -238,5 +241,12 @@ public class AuthController {
         }
         accountService.changePassword(account, changePasswordDTO.getNewPassword());
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/v1/public/reset-password")
+    public ResponseEntity<?> resetPasswordRequest(@RequestBody ResetPasswordRequestDto requestDto) {
+        String newPass = emailService.sendMailResetPass(requestDto.getEmail());
+        accountService.resetPassword(requestDto.getEmail(), newPass);
+        return ResponseEntity.ok("Đã gửi mật khẩu mới đến email của bạn");
     }
 }

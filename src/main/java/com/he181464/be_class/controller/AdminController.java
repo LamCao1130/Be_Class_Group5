@@ -51,7 +51,7 @@ public class AdminController {
         return ResponseEntity.ok(accountResponseDto);
     }
 
-    @PatchMapping("/teacher/restore/{id}")
+
 
     @GetMapping("/student")
     @PreAuthorize("hasAuthority('ADMIN')")

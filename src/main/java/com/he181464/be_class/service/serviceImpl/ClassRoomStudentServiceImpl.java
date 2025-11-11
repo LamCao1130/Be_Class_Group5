@@ -1,5 +1,6 @@
 package com.he181464.be_class.service.serviceImpl;
 
+import com.he181464.be_class.constant.AppConstant;
 import com.he181464.be_class.dto.ClassRoomDto;
 import com.he181464.be_class.dto.ClassRoomStudentDTO;
 import com.he181464.be_class.entity.ClassRoom;
@@ -38,7 +39,7 @@ public class ClassRoomStudentServiceImpl implements ClassRoomStudentDTOService {
 
     @Override
     public ClassRoomStudentDTO joinClassRoomByCode(long studentId, String code) {
-        ClassRoom classRoom = classRoomRepository.findByCode(code);
+        ClassRoom classRoom = classRoomRepository.findByCodeAndStatus(code, AppConstant.STATUS_ACTIVE);
         if(classRoom!= null){
             if(classRoomStudentRepository.findByClassRoomIdAndStudentId(classRoom.getId(), studentId) != null){
                 throw new IllegalArgumentException("Học sinh đã tham gia lớp học này");

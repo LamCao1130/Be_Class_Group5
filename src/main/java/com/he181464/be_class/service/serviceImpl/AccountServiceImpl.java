@@ -150,6 +150,15 @@ public class AccountServiceImpl implements AccountService {
     accountRepository.save(account);
     }
 
+    @Override
+    @Transactional
+    public void resetPassword(String email, String newPassword) {
+        Account account = accountRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Account not found"));
+        account.setPassword(passwordEncoder.encode(newPassword));
+        account.setSecretCode(null);
+        accountRepository.save(account);
+    }
 
 
     @Override

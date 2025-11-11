@@ -19,5 +19,16 @@ spring :
           time_zone: Asia/Ho_Chi_Minh
   jackson:
     time-zone: Asia/Ho_Chi_Minh
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: lamch301104@gmail.com
+    password: igjc rmgo clmj xlkm
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 jwt:
   secret: daylatokenCuaCaoHaiLamDoAiBiet04
