@@ -82,6 +82,11 @@ public class AdminServiceImpl implements AdminService {
     public AccountResponseDto deleteAccount(Long accountId) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new NoSuchElementException("Not found account id" +accountId));
+        boolean isTeaching = classRoomRepository.existsByTeacherId(accountId);
+        if (isTeaching) {
+            throw new IllegalStateException("Cannot delete this account because the teacher is assigned to a class.");
+        }
+
         account.setStatus(Integer.parseInt(AppConstant.STATUS_INACTIVE));
 
         List<Token> allValidToken = tokenRepository.findAllValidTokenByAccountId(accountId);

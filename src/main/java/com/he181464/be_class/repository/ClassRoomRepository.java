@@ -23,6 +23,8 @@ public interface ClassRoomRepository extends JpaRepository<ClassRoom, Long> {
     Page<ClassRoom> findAll(Pageable pageable);
     ClassRoom findByCode(String code);
 
+    boolean existsByTeacherId(Long accountId);
+
     //List<Long> findByTeacherIdAndStatus(Long teacherId, String status);
 
 }
