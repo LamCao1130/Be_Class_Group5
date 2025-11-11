@@ -61,4 +61,7 @@ public class Exam {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "exam")
     private List<QuestionType> questionTypes;
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "exam")
+    private List<ReadingPassage> readingPassages;
 }

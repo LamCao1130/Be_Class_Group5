@@ -25,13 +25,8 @@ public class LessonDto {
 
     private String content;
 
-    private Integer hasHomework;
-
-    private String homeworkInstructions;
 
     private LocalDateTime homeworkDeadline;
-
-    private Integer homeworkMaxScore;
 
     private String homeworkAttachmentUrl;
 

@@ -40,5 +40,7 @@ public interface QuestionService {
 
     List<ReadingDto> getReadingPassageByLessonId(Long lessonId);
 
+    List<HomeWorkStatusDto>getStatusOfSubmission(Long lessonId);
 
+    List<QuestionCreateDto>getListQuestionByExam(Integer id);
 }

@@ -7,15 +7,17 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class SubmissionHistoryDto {
-    private Long id;
-    private String type;
-    private Integer numberWrong;
-    private LocalDateTime submittedAt;
-    private Long studentId;
-    private Long lessonId;
-    private String answerWriting;
+@NoArgsConstructor
+public class HomeWorkStatusDto {
 
+    private String studentName;
+
+    private String status;
+
+    private Integer numberWrong;
+
+    private LocalDateTime submittedAt;
+
+    private String type;
 }

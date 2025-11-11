@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ExamRepository extends JpaRepository<Exam,Integer> {
@@ -17,4 +18,11 @@ public interface ExamRepository extends JpaRepository<Exam,Integer> {
     List<Exam> findByClassRoomId( Long classRoomId);
 
     List<Exam> findAllByClassRoomId(Long classRoomId);
+
+    @Query("select e from Exam e " +
+            "where e.examDate >= CURRENT_DATE and " +
+            "e.examDate < :twoDaysLater  " +
+            "and e.classRoom.id = :classroomId")
+    List<Exam> getComingExam(@Param("classroomId") Long classroomId,
+    @Param("twoDaysLater")LocalDateTime twoDayLater);
 }

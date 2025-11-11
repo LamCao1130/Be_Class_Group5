@@ -12,6 +12,9 @@ import java.util.List;
 public interface LessonRepository extends JpaRepository<Lesson, Long> {
     List<Lesson> findByClassRoomId(Long classRoomId);
 
+    @Query("select count(l) from Lesson l where l.status = 1")
+    Integer countActiveLessons();
+
     @Query("select l from Lesson l " +
             "join ClassRoom cr on cr.id = l.classRoomId " +
             "where cr.teacherId = :teacherId")

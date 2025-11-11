@@ -15,8 +15,6 @@ public interface QuestionRepository extends JpaRepository<Questions, Integer> {
             "WHERE qo.questions.questionType.lesson.id = :lessonId")
     List<QuestionOption> findQuestionOptionByLessonId(@Param("lessonId") Long id);
 
-
-
     @Query("SELECT q from Questions q " +
             "WHERE q.questionType.lesson.id =:lessonId")
     List<Questions> findByQuestionType_LessonId(@Param("lessonId") Long id);
@@ -29,5 +27,11 @@ public interface QuestionRepository extends JpaRepository<Questions, Integer> {
             "WHERE qo.questions.questionType.id = :questionTypeId")
     List<QuestionOption> findQuestionOptionByQuestionTypeId(@Param("questionTypeId") Integer id);
 
+    @Query("SELECT q from Questions q " +
+            "WHERE q.questionType.exam.id =:examId")
+    List<Questions> findByQuestionType_ExamId(@Param("examId") Integer id);
 
+    @Query("SELECT qo FROM QuestionOption qo " +
+            "WHERE qo.questions.questionType.exam.id = :examId")
+    List<QuestionOption> findQuestionOptionByExamId(@Param("examId") Integer id);
 }

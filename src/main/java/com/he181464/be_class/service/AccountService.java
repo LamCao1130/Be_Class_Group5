@@ -16,6 +16,7 @@ public interface AccountService {
 
     List<AccountResponseDto> getAllAccount();
 
+    Long getAccountIdByEmail(String email);
 
     Account getAccountByEmailToGenerate2Fa(String email);
 

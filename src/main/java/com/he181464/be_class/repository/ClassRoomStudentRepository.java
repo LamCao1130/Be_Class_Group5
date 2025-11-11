@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import com.he181464.be_class.dto.ClassRoomStudentDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -39,8 +40,13 @@ public interface ClassRoomStudentRepository extends JpaRepository<ClassRoomStude
         WHERE crs.studentId = :studentId
     """)
     Page<ClassRoomStudentDTO> findClassRoomByStudentId(long studentId, Pageable pageable);
+    Long countClassRoomStudentByStudentId(Long studentId);
+
+    Page<ClassRoomStudent> findClassRoomStudentByStudentId(Long studentId, Pageable pageable);
 
     List<ClassRoomStudent> findByClassRoomId(Long classRoomId);
 
     ClassRoomStudent findByClassRoomIdAndStudentId(Long classRoomId, Long studentId);
+
+    List<ClassRoomStudent> findByClassRoomId(Long classRoomId);
 }

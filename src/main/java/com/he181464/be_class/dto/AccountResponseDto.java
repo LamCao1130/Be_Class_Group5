@@ -30,4 +30,6 @@ public class AccountResponseDto {
 
     private List<ClassRoomResponseDto> classRooms;
 
+
+    private Long numberClass;
 }
