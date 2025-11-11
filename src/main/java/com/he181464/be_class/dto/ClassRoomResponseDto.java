@@ -35,6 +35,8 @@ public class ClassRoomResponseDto {
 
     private Integer studentCount;
 
+    private List<AccountResponseDto> students;
+
     private List<LessonDto> lessons;
 
     private List<ExamDto> exams;

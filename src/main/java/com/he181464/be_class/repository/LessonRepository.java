@@ -19,4 +19,6 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
             "join ClassRoom cr on cr.id = l.classRoomId " +
             "where cr.teacherId = :teacherId")
     List<Lesson> findAllByTeacherId(@Param("teacherId") Long teacherId);
+
+    List<Lesson> findAllByClassRoomId(Long classRoomId);
 }
